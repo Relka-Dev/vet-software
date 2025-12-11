@@ -1,12 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vet Software</title>
-</head>
-<body>
-    <h1>Bienvenue sur Vet Software</h1>
-    <p>Système de gestion vétérinaire</p>
-</body>
-</html>
+<!-- templates/home/index.html -->
+
+{% extends "home/base.html" %} {% block title %}Vet Software - Accueil
+{%endblock %} {% block content %}
+<div class="text-3xl text-green-800">
+  <h1>Bienvenue sur Vet Software</h1>
+  <p>Système de gestion vétérinaire</p>
+</div>
+{% endblock content %}
