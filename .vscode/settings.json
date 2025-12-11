@@ -1,0 +1,22 @@
+{
+  // Python formatting
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    }
+  },
+
+  // Python settings
+  "python.formatting.provider": "none",
+  "black-formatter.args": ["--skip-string-normalization"],
+  "isort.args": ["--profile", "black"],
+
+  // Files settings
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+
+  // Editor settings
+  "editor.rulers": [88]
+}

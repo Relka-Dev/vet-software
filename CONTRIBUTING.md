@@ -2,70 +2,88 @@
 
 ### Prerequisites
 
-- Python 3.10+
-- Git
-- Virtual environment tool (venv) or other if the packages are compatible
+- **Python 3.10+**
+- **Node.js 20.x LTS or higher** (for Tailwind CSS compilation)
+- **Git**
+- **Virtual environment tool** (venv) or other if the packages are compatible
 
 ### Getting started, initial Setup
 
 1. **Clone the repository**
 
-*Start by making sure to have the correct access rights. For any questions, please contact : <relka.dev@gmail.com>*
+_Start by making sure to have the correct access rights. For any questions, please contact : <relka.dev@gmail.com>_
 
 ```bash
-   git clone https://github.com/relka-dev/vet-software.git
-   cd vet-software
-   cd src # Go to the project source
+git clone https://github.com/relka-dev/vet-software.git
+cd vet-software
 ```
 
-1. **Create and activate virtual environment**
+2. **Create and activate virtual environment**
 
-*On Linux or Mac OS*
+_On Linux or Mac OS_
 
 ```bash
 python -m venv venv
 source venv/bin/activate
 ```
 
-*On Windows*
+_On Windows_
 
-```sh
+```powershell
 python -m venv venv
-venv\Scripts\activate  
+venv\Scripts\activate
 ```
 
-3. **Install dependencies**
+3. **Install Python dependencies**
 
 ```bash
 pip install -r requirements.txt
 ```
 
-4. **Apply database migrations**
+4. **Install Node.js dependencies (for Tailwind CSS)**
+
 ```bash
+cd static
+npm install
+cd ..
+```
+
+5. **Apply database migrations**
+
+```bash
+cd src
 python manage.py migrate
 ```
 
+6. **Create a superuser (optional, for admin access)**
 
-5. **Create a superuser (optional, for admin access)**
 ```bash
-   python manage.py createsuperuser
+python manage.py createsuperuser
 ```
 
+7. **Compile Tailwind CSS (in a separate terminal)**
 
-6. **Run the development server**
+_Keep this running during development for automatic CSS compilation_
+
 ```bash
-   python manage.py runserver
+cd static
+npx tailwindcss -i ./src/input.css -o ./src/output.css --watch
 ```
 
-7. **Access the application**
+8. **Run the development server (in another terminal)**
+
+```bash
+cd src
+python manage.py runserver
+```
+
+9. **Access the application**
    - Main site: http://127.0.0.1:8000/
    - Admin panel: http://127.0.0.1:8000/admin/
-
 
 ### Contributing
 
 We use the [**Feature Branch Workflow**](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow).
-
 
 - **`main`**: Production-ready code, always stable
 - **`feature/*`**: New features
@@ -90,16 +108,14 @@ git add .
 git commit -m "Code: Add appointment model"
 ```
 
-
 ⚠️ To Complete ⚠️
-
 
 ## Push normalisation
 
-| Prefix  | Domain            | Description                                              |
-|---------|-------------------|----------------------------------------------------------|
-| Code    | Code / Features   | Code implementation and functionality                    |
-| Docs    | Documentation     | Documentation / Project readability (ReadMe, etc.)       |
-| Struct  | Structure         | Project structure                                        |
-| Mixed   | Multiple domains  | Multiple domains changed (Detailed description recommended) |
-| Hotfix  | Quick fix         | Quick modification to repair an error or bug             | 
+| Prefix | Domain           | Description                                                 |
+| ------ | ---------------- | ----------------------------------------------------------- |
+| Code   | Code / Features  | Code implementation and functionality                       |
+| Docs   | Documentation    | Documentation / Project readability (ReadMe, etc.)          |
+| Struct | Structure        | Project structure                                           |
+| Mixed  | Multiple domains | Multiple domains changed (Detailed description recommended) |
+| Hotfix | Quick fix        | Quick modification to repair an error or bug                |

@@ -39,7 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'home',
     'inventory',
+    'compressor',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -50,7 +52,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
 ROOT_URLCONF = 'vet_software.urls'
 
 TEMPLATES = [
@@ -117,3 +118,21 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# Dossier où Django cherche les fichiers statiques
+STATICFILES_DIRS = [
+    BASE_DIR.parent / 'static',
+]
+
+# Dossier où collectstatic rassemble tous les fichiers statiques (production)
+STATIC_ROOT = BASE_DIR.parent / 'staticfiles'
+
+# Django Compressor settings
+COMPRESS_ROOT = BASE_DIR.parent / 'static'
+COMPRESS_ENABLED = True
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+)

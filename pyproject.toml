@@ -1,0 +1,46 @@
+[tool.black]
+line-length = 88
+target-version = ['py311']
+skip-string-normalization = true
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+  | migrations
+)/
+'''
+
+[tool.isort]
+profile = "black"
+skip_glob = ["*/migrations/*"]
+known_django = "django"
+sections = ["FUTURE", "STDLIB", "DJANGO", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+
+[tool.ruff]
+line-length = 88
+exclude = [
+    ".git",
+    "__pycache__",
+    "*/migrations/*",
+    "venv",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = []
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "vet_software.settings"
+python_files = ["test_*.py", "*_test.py", "tests.py"]
+addopts = "--cov=. --cov-report=html --cov-report=term-missing"
