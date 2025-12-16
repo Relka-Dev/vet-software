@@ -52,7 +52,7 @@ vet-software/
 
 [DB Diagram link](https://dbdiagram.io/d/692583c97d9416ddff01868e)
 
-![screenshot db schema](genie-logiciel_SQL_2025-12-11.png)
+![screenshot db schema](./docs/img/genie-logiciel_SQL_2025-12-11.png)
 
 ## Authors
 
