@@ -1,6 +1,7 @@
 from django.db import models
 from animal.models import Animal
 from employee.models import Employee
+from inventory.models import Item
 
 class RoomType(models.Model):
     """Types de salles (consulation, opération, radio, etc.)"""
@@ -110,6 +111,43 @@ class Appointement(models.Model):
         verbose_name = "Consultation"
         verbose_name_plural = "Consultations"
 
+class Note(models.Model):
+    """Notes associées à une consultation"""
+
+    content = models.TextField(
+        max_length=500,
+        verbose_name="Contenu de la note"
+    )
+
+    created_at = models.DateTimeField(
+        verbose_name="Date de création"
+    )
+
+    appointement = models.ForeignKey(
+        Appointement,
+        on_delete=models.CASCADE,
+        related_name="notes",
+        verbose_name="Consultation"
+    )
+
+    created_by = models.ForeignKey(
+        Employee,
+        on_delete=models.PROTECT,
+        related_name="notes",
+        verbose_name="Créé par"
+    )
+
+    validated_by = models.ForeignKey(
+        Employee,
+        on_delete=models.PROTECT,
+        related_name="validated_notes",
+        verbose_name="Validé par",
+    )
+
+    class Meta:
+        verbose_name = "Note"
+        verbose_name_plural = "Notes"
+
 
 class AppointementProcedure(models.Model):
     """Table d'association entre consultation et prodécure"""
@@ -150,3 +188,25 @@ class AppointementEquipement(models.Model):
     class Meta:
         verbose_name = "Association consultation/équipement"
         verbose_name_plural = "Associations consultation/équipement"
+
+
+class AppointementItem(models.Model):
+    """Table d'association entre consultation et articles utilisés"""
+
+    appointement = models.ForeignKey(
+        Appointement,
+        on_delete=models.PROTECT,
+        verbose_name="Consultation"
+    )
+
+    item = models.ForeignKey(
+        Item,
+        on_delete=models.PROTECT,
+        verbose_name="Article"
+    )
+
+    quantity = models.IntegerField()
+
+    class Meta:
+        verbose_name = "Association consultation/article"
+        verbose_name_plural = "Associations consultation/article"
