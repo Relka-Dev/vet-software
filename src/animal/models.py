@@ -1,30 +1,27 @@
 from django.db import models
 from family.models import Family
 
+
 class Animal(models.Model):
     """Animaux pris en charge par le cabinet"""
 
-    name = models.CharField(
-        max_length=50,
-        verbose_name="Nom de l'animal"
-    )
+    name = models.CharField(max_length=50, verbose_name="Nom de l'animal")
     birthday = models.DateField()
 
     federal_identification = models.CharField(
-        max_length=100,
-        verbose_name="Identification fédérale"
+        max_length=100, verbose_name="Identification fédérale"
     )
 
     family = models.ForeignKey(
-        Family,
-        on_delete=models.PROTECT,
-        related_name="animal",
-        verbose_name="Contact"
+        Family, on_delete=models.PROTECT, related_name="animal", verbose_name="Contact"
     )
 
     class Meta:
         verbose_name = "Animal"
         verbose_name_plural = "Animaux"
+
+    def __str__(self):
+        return f"Name : {self.name} - Birthday : {self.birthday} - Federal Identification : {self.federal_identification} - Family : {self.family}"
 
 
 class AnimalChart(models.Model):
@@ -34,9 +31,12 @@ class AnimalChart(models.Model):
         Animal,
         on_delete=models.CASCADE,
         related_name="animal_chart",
-        verbose_name="Animal"
+        verbose_name="Animal",
     )
 
     class Meta:
         verbose_name = "Dossier médical"
         verbose_name_plural = "Dossiers médicaux"
+
+    def __str__(self):
+        return self.animal
