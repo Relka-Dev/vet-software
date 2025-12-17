@@ -1,16 +1,18 @@
 from django.db import models
 from person.models import Person
 
+
 class Role(models.Model):
     """Fonctions liées aux employés (vétérinaire, réceptioniste, étudiant etc.)"""
-    name = models.CharField(
-        max_length=100,
-        verbose_name="Fonction de l'employé(e)"
-    )
+
+    name = models.CharField(max_length=100, verbose_name="Fonction de l'employé(e)")
 
     class Meta:
         verbose_name = "Fonction de l'employé(e)"
         verbose_name_plural = "Fonctions de l'employé(e)"
+
+    def __str__(self):
+        return self.name
 
 
 class Employee(models.Model):
@@ -20,7 +22,7 @@ class Employee(models.Model):
         Person,
         on_delete=models.CASCADE,
         related_name="employee",
-        verbose_name="Personne"
+        verbose_name="Personne",
     )
 
     first_engagement_date = models.DateField()
@@ -29,12 +31,15 @@ class Employee(models.Model):
         Role,
         on_delete=models.PROTECT,
         related_name="employee",
-        verbose_name="Fonction de l'employé(e)"
+        verbose_name="Fonction de l'employé(e)",
     )
 
     class Meta:
         verbose_name = "Employé(e)"
         verbose_name_plural = "Employé(e)s"
+
+    def __str__(self):
+        return f"{self.person} - {self.first_engagement_date} - {self.role}"
 
 
 class DisponibilityRange(models.Model):
@@ -47,17 +52,19 @@ class DisponibilityRange(models.Model):
         verbose_name = "Période de disponibilité"
         verbose_name_plural = "Périodes de disponibilité"
 
+    def __str__(self):
+        return f"Start Date : {self.start_date} - End Date : {self.end_date}"
+
 
 class DisponibilityEmployee(models.Model):
     """Table d'association entre employés et périodes"""
 
     employee = models.ForeignKey(
-        Employee,
-        on_delete=models.CASCADE,
-        verbose_name="Employé(e)"
+        Employee, on_delete=models.CASCADE, verbose_name="Employé(e)"
     )
     disponibility_range = models.ForeignKey(
-        DisponibilityRange,
-        on_delete=models.CASCADE,
-        verbose_name="Période"
+        DisponibilityRange, on_delete=models.CASCADE, verbose_name="Période"
     )
+
+    def __str__(self):
+        return f"Employe : {self.employee} - Disponibility Range : {self.disponibility_range}"
