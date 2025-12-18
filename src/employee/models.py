@@ -3,9 +3,11 @@ from person.models import Person
 
 
 class Role(models.Model):
-    """Fonctions liées aux employés (vétérinaire, réceptioniste, étudiant etc.)"""
+    """Fonctions liées aux employés (vétérinaire, réceptionniste, étudiant etc.)"""
 
-    name = models.CharField(max_length=100, verbose_name="Fonction de l'employé(e)")
+    name = models.CharField(
+        max_length=100, verbose_name="Fonction de l'employé(e)", null=False
+    )
 
     class Meta:
         verbose_name = "Fonction de l'employé(e)"
@@ -42,7 +44,7 @@ class Employee(models.Model):
         return f"{self.person} - {self.first_engagement_date} - {self.role}"
 
 
-class DisponibilityRange(models.Model):
+class AvailabilityRange(models.Model):
     """Périodes de temps"""
 
     start_date = models.DateTimeField()
@@ -56,15 +58,15 @@ class DisponibilityRange(models.Model):
         return f"Start Date : {self.start_date} - End Date : {self.end_date}"
 
 
-class DisponibilityEmployee(models.Model):
+class AvailabilityEmployee(models.Model):
     """Table d'association entre employés et périodes"""
 
     employee = models.ForeignKey(
         Employee, on_delete=models.CASCADE, verbose_name="Employé(e)"
     )
-    disponibility_range = models.ForeignKey(
-        DisponibilityRange, on_delete=models.CASCADE, verbose_name="Période"
+    availability_range = models.ForeignKey(
+        AvailabilityRange, on_delete=models.CASCADE, verbose_name="Période"
     )
 
     def __str__(self):
-        return f"Employe : {self.employee} - Disponibility Range : {self.disponibility_range}"
+        return f"Employee : {self.employee} - Availability Range : {self.availability_range}"

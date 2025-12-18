@@ -4,9 +4,8 @@ from .models import (
     Room,
     EmergencyType,
     Procedure,
-    Equipement,
-    Appointement,
-    Note,
+    Equipment,
+    Appointment,
 )
 
 
@@ -30,12 +29,12 @@ class ProcedureAdmin(admin.ModelAdmin):
     list_display = ['name']
 
 
-@admin.register(Equipement)
-class EquipementAdmin(admin.ModelAdmin):
+@admin.register(Equipment)
+class EquipmentAdmin(admin.ModelAdmin):
     list_display = ['name']
 
 
-@admin.register(Appointement)
+@admin.register(Appointment)
 class AppointmentAdmin(admin.ModelAdmin):
     list_display = [
         'animal',
@@ -45,8 +44,3 @@ class AppointmentAdmin(admin.ModelAdmin):
         'start_date',
         'end_date',
     ]
-
-
-@admin.register(Note)
-class NoteAdmin(admin.ModelAdmin):
-    list_display = ['appointement', 'created_at', 'created_by', 'validated_by']

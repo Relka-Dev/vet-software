@@ -5,9 +5,9 @@ from inventory.models import Item
 
 
 class RoomType(models.Model):
-    """Types de salles (consulation, opération, radio, etc.)"""
+    """Types de salles (consultation, opération, radio, etc.)"""
 
-    name = models.CharField(max_length=50, verbose_name="Type de salle")
+    name = models.CharField(max_length=50, verbose_name="Type de salle", null=False)
 
     class Meta:
         verbose_name = "Type de salle"
@@ -32,13 +32,15 @@ class Room(models.Model):
         verbose_name_plural = "Salles"
 
     def __str__(self):
-        return self.room_type
+        return str(self.room_type)
 
 
 class EmergencyType(models.Model):
     """Types d'urgence/consultation"""
 
-    name = models.CharField(max_length=100, verbose_name="Type de rendez-vous")
+    name = models.CharField(
+        max_length=100, verbose_name="Type de rendez-vous", null=False
+    )
 
     class Meta:
         verbose_name = "Type de rendez-vous"
@@ -51,7 +53,9 @@ class EmergencyType(models.Model):
 class Procedure(models.Model):
     """Types de procédure fait durant une consultation"""
 
-    name = models.CharField(max_length=100, verbose_name="Nom de la prodécure")
+    name = models.CharField(
+        max_length=100, verbose_name="Nom de la procédure", null=False
+    )
     price = models.DecimalField(
         max_digits=10, decimal_places=2, verbose_name="Prix (CHF)"
     )
@@ -64,10 +68,12 @@ class Procedure(models.Model):
         return f"{self.name} - {self.price} CHF"
 
 
-class Equipement(models.Model):
+class Equipment(models.Model):
     """Types d'équipement utilisés durant une consultation"""
 
-    name = models.CharField(max_length=50, verbose_name="Nom de l'équipement")
+    name = models.CharField(
+        max_length=50, verbose_name="Nom de l'équipement", null=False
+    )
 
     class Meta:
         verbose_name = "Équipement"
@@ -77,34 +83,34 @@ class Equipement(models.Model):
         return self.name
 
 
-class Appointement(models.Model):
+class Appointment(models.Model):
     """Informations sur les rendez-vous/consultations"""
 
     animal = models.ForeignKey(
         Animal,
         on_delete=models.CASCADE,
-        related_name="appointement",
+        related_name="appointment",
         verbose_name="Animal",
     )
 
     room = models.ForeignKey(
         Room,
         on_delete=models.PROTECT,
-        related_name="appointement",
+        related_name="appointment",
         verbose_name="Salle",
     )
 
     employee = models.ForeignKey(
         Employee,
         on_delete=models.PROTECT,
-        related_name="appointement",
+        related_name="appointment",
         verbose_name="Employé",
     )
 
     emergency_type = models.ForeignKey(
         EmergencyType,
         on_delete=models.PROTECT,
-        related_name="appointement",
+        related_name="appointment",
         verbose_name="Type de consultation",
     )
 
@@ -119,50 +125,14 @@ class Appointement(models.Model):
         return f"Animal : {self.animal} - Salle : {self.room} - Employee : {self.employee} - Emergency Type : {self.emergency_type} - Start Date  : {self.start_date} - End Date : {self.end_date}"
 
 
-class Note(models.Model):
-    """Notes associées à une consultation"""
+class AppointmentProcedure(models.Model):
+    """Table d'association entre consultation et procédure"""
 
-    content = models.TextField(max_length=500, verbose_name="Contenu de la note")
-
-    created_at = models.DateTimeField(verbose_name="Date de création")
-
-    appointement = models.ForeignKey(
-        Appointement,
-        on_delete=models.CASCADE,
-        related_name="notes",
-        verbose_name="Consultation",
+    appointment = models.ForeignKey(
+        Appointment, on_delete=models.PROTECT, verbose_name="Consultation"
     )
 
-    created_by = models.ForeignKey(
-        Employee,
-        on_delete=models.PROTECT,
-        related_name="notes",
-        verbose_name="Créé par",
-    )
-
-    validated_by = models.ForeignKey(
-        Employee,
-        on_delete=models.PROTECT,
-        related_name="validated_notes",
-        verbose_name="Validé par",
-    )
-
-    class Meta:
-        verbose_name = "Note"
-        verbose_name_plural = "Notes"
-
-    def __str__(self):
-        return f"Content : {self.content} - Created at : {self.created_at} - Appointement : {self.appointement} - Created By : {self.created_at} - Validated By : {self.validated_by}"
-
-
-class AppointementProcedure(models.Model):
-    """Table d'association entre consultation et prodécure"""
-
-    appointement = models.ForeignKey(
-        Appointement, on_delete=models.PROTECT, verbose_name="Consultation"
-    )
-
-    prodecure = models.ForeignKey(
+    procedure = models.ForeignKey(
         Procedure, on_delete=models.PROTECT, verbose_name="Procédure"
     )
 
@@ -173,18 +143,18 @@ class AppointementProcedure(models.Model):
         verbose_name_plural = "Associations consultation/procédure"
 
     def __str__(self):
-        return f"Appointement : {self.appointement} - Created By : {self.prodecure} - Quantity : {self.quantity}"
+        return f"Appointment : {self.appointment} - Created By : {self.procedure} - Quantity : {self.quantity}"
 
 
-class AppointementEquipement(models.Model):
+class AppointmentEquipment(models.Model):
     """Table d'association entre consultation et équipements"""
 
-    appointement = models.ForeignKey(
-        Appointement, on_delete=models.PROTECT, verbose_name="Consultation"
+    appointment = models.ForeignKey(
+        Appointment, on_delete=models.PROTECT, verbose_name="Consultation"
     )
 
-    equipement = models.ForeignKey(
-        Procedure, on_delete=models.PROTECT, verbose_name="Équipement"
+    equipment = models.ForeignKey(
+        Equipment, on_delete=models.PROTECT, verbose_name="Équipement"
     )
 
     class Meta:
@@ -192,14 +162,14 @@ class AppointementEquipement(models.Model):
         verbose_name_plural = "Associations consultation/équipement"
 
     def __str__(self):
-        return f"Appointement : {self.appointement} - Created By : {self.equipement}"
+        return f"Appointment : {self.appointment} - Created By : {self.equipment}"
 
 
-class AppointementItem(models.Model):
+class AppointmentItem(models.Model):
     """Table d'association entre consultation et articles utilisés"""
 
-    appointement = models.ForeignKey(
-        Appointement, on_delete=models.PROTECT, verbose_name="Consultation"
+    appointment = models.ForeignKey(
+        Appointment, on_delete=models.PROTECT, verbose_name="Consultation"
     )
 
     item = models.ForeignKey(Item, on_delete=models.PROTECT, verbose_name="Article")
@@ -211,4 +181,4 @@ class AppointementItem(models.Model):
         verbose_name_plural = "Associations consultation/article"
 
     def __str__(self):
-        return f"Appointement : {self.item} - Created By : {self.quantity}"
+        return f"Appointment : {self.item} - Created By : {self.quantity}"
