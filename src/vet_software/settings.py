@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'inventory',
     'person',
     'animal',
-    'appointement',
+    'appointment',
     'employee',
     'family',
     'compressor',
