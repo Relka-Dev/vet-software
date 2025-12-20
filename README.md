@@ -54,7 +54,7 @@ vet-software/
 
 ![screenshot db schema](./docs/img/genie-logiciel_SQL_2025-12-11.png)
 
-**SQL dumps :** can be found at `./db`
+**SQL dumps :** can be found [here](./db).
 
 ## Authors
 
