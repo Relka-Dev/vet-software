@@ -1,5 +1,22 @@
 # Contributing to vet-software
 
+This guide covers the complete development workflow for the vet-software project, from initial setup to deployment. Follow these guidelines to ensure consistency across the team.
+
+## Table of Contents
+
+- [Contributing to vet-software](#contributing-to-vet-software)
+  - [Table of Contents](#table-of-contents)
+  - [Prerequisites](#prerequisites)
+  - [Getting Started](#getting-started)
+  - [Development Workflow](#development-workflow)
+  - [Commit Message Conventions](#commit-message-conventions)
+  - [Creating a New Django App](#creating-a-new-django-app)
+  - [Working with Django Models](#working-with-django-models)
+  - [Working with Tailwind CSS](#working-with-tailwind-css)
+  - [Populating Database with Dummy Data](#populating-database-with-dummy-data)
+  - [Testing](#testing)
+  - [Make an SQL dump](#make-an-sql-dump)
+
 ## Prerequisites
 
 - **Python 3.10+**
@@ -53,7 +70,7 @@ cd ..
 ```bash
 cd src
 python manage.py migrate
-python manage.py createsuperuser  # Optional
+python manage.py createsuperuser
 ```
 
 5. **Populate database with dummy data**
@@ -568,43 +585,18 @@ class YourModelTest(TestCase):
 
 ---
 
-## Code Style Guidelines
+## Make an SQL dump
 
-### Python
+_Linux/Mac OS:_
 
-- Follow PEP 8
-- Use meaningful variable/function names
-- Add docstrings to functions and classes
-- Keep functions focused on single responsibility
-
-### Django Models
-
-- Use `verbose_name` for all fields
-- Include `class Meta` with verbose names
-- Implement `__str__()` method
-- Choose appropriate `on_delete` for ForeignKeys
-
-**Good Example:**
-
-```python
-class Appointment(models.Model):
-    """Appointment in the veterinary clinic"""
-
-    patient = models.ForeignKey(
-        Patient,
-        on_delete=models.CASCADE,
-        related_name='appointments',
-        verbose_name="Patient"
-    )
-    date = models.DateTimeField(verbose_name="Appointment date")
-
-    class Meta:
-        verbose_name = "Appointment"
-        verbose_name_plural = "Appointments"
-        ordering = ['-date']
-
-    def __str__(self):
-        return f"{self.patient.name} - {self.date}"
+```bash
+cd src
+sqlite3 db.sqlite3 ".dump" > ../db/dump-$(date +%d.%m.%Y).sql
 ```
 
----
+_Windows_
+
+```sh
+cd src
+sqlite3 db.sqlite3 ".dump" > ..\db\dump-%date:~0,2%.%date:~3,2%.%date:~6,4%.sql
+```

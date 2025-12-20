@@ -43,7 +43,7 @@ vet-software/
 │   │   └── output.css     # Compiled CSS (generated)
 │   └── tailwind.config.js # Tailwind configuration
 ├── docs/                  # Documentation
-├── venv/                  # Virtual environment (not in git)
+├── venv/                  # Virtual environment
 └── requirements.txt       # Python dependencies
 
 ```
@@ -53,6 +53,8 @@ vet-software/
 [DB Diagram link](https://dbdiagram.io/d/692583c97d9416ddff01868e)
 
 ![screenshot db schema](./docs/img/genie-logiciel_SQL_2025-12-11.png)
+
+**SQL dumps :** can be found at `./db`
 
 ## Authors
 
