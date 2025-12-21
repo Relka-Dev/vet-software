@@ -76,7 +76,7 @@ Inventory
             padding: 24px;
             border-radius: 12px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
-            width: 320px;
+            width: 500px;
             text-align: center;
             opacity: 0;
             transform: scale(0.8);
@@ -151,7 +151,7 @@ Inventory
     </style>
     <body>
         <h2>Inventaire</h2>
-        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
+        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search (not working yet).." title="Type in a name">
 
         <table id="myTable">
             <thead>
@@ -177,38 +177,47 @@ Inventory
         </table>
 
     <button class="btn-open-popup" onclick="togglePopup()">
-      Ajouter un nouvel article
+      Ajouter
       </button>
 
     <div id="popupOverlay"
          class="overlay-container">
         <div class="popup-box">
-            <h2 style="color: green;">Popup Form</h2>
-            <form class="form-container">
-                <label class="form-label"
-                       for="name">
-                  Username:
-                  </label>
-                <input class="form-input" type="text"
-                       placeholder="Enter Your Username"
-                       id="name" name="name" required>
-
-                <label class="form-label" for="email">Email:</label>
-                <input class="form-input"
-                       type="email"
-                       placeholder="Enter Your Email"
-                       id="email"
-                       name="email" required>
+            <h2 style="color: green;">Nouvel Article</h2>
+            <form method="post", action="{% url 'add_item' %}", class="form-container">
+                {% csrf_token %}
+                <label for="name">Nom du traitement:</label>
+                <input type="text" name="name" required>
+                <br>
+                <label for="reminder">Rappel:</label>
+                <input type="text" name="reminder" required>
+                <br>
+                <label for="price">Prix:</label>
+                <input type="number" name="price" required>
+                <br>
+                <label for="treatment_type">Type de traitement:</label>
+                <select name="treatment_type" required>
+                {% for type in all_types %}
+                  <option value="{{ type }}">{{ type }}</option>
+                {% endfor %}
+                </select>
+                <br>
+                <label for="quantity">Quantité:</label>
+                <input type="number" name="quantity" required>
+                <br>
+                <label for="expiration_date">Date d'expiration:</label>
+                <input type="date" name="expiration_date" required>
+                <br>
 
                 <button class="btn-submit"
                         type="submit">
-                  Submit
+                  Ajouter
                   </button>
             </form>
 
             <button class="btn-close-popup"
                     onclick="togglePopup()">
-              Close
+              Fermer
               </button>
         </div>
     </div>
