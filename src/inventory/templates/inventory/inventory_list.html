@@ -4,51 +4,221 @@ Inventory
 {%endblock %}
 {% block content %}
 <div class="text-3xl text-green-800">
-  <h1>Inventory</h1>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-    <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
-    <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
-        <div>
-            <div class="overflow-x-auto">
-                <div class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
-                    <form class="flex items-center">
-                        <div class="relative w-full">
-                        <label for="simple-search" class="sr-only">Search</label>
-                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"></div>
-                            <input type="text" id="simple-search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Search" required="">
-                        <button type="button" class="flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
-                        Add product
-                        </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                        <tr>
-                            <th scope="col" class="px-4 py-3">Nom</th>
-                            <th scope="col" class="px-4 py-3">Quantité</th>
-                            <th scope="col" class="px-4 py-3">Date d'expiration</th>
-                            <th scope="col" class="px-4 py-3">Type de traitement</th>
-                            <th scope="col" class="px-4 py-3">Prix</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in inventory %}
-                        <tr class="border-b dark:border-gray-700">
-                            <td scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ item.item.name }}</td>
-                            <td class="px-4 py-3">{{ item.quantity }}</td>
-                            <td class="px-4 py-3">{{ item.expiration_date }}</td>
-                            <td class="px-4 py-3">{{ item.item.treatment_type }}</td>
-                            <td class="px-4 py-3">${{ item.item.price }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+        #myInput {
+            background-image: url('/css/searchicon.png');
+            background-position: 10px 10px;
+            background-repeat: no-repeat;
+            width: 100%;
+            font-size: 16px;
+            padding: 12px 20px 12px 40px;
+            border: 1px solid #ddd;
+            margin-bottom: 12px;
+        }
+
+        #myTable {
+            border-collapse: collapse;
+            width: 100%;
+            border: 1px solid #ddd;
+            font-size: 18px;
+        }
+
+        #myTable th,
+        #myTable td {
+            text-align: left;
+            padding: 12px;
+        }
+
+        #myTable tr {
+            border-bottom: 1px solid #ddd;
+        }
+
+        #myTable tr.header,
+        #myTable tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .btn-open-popup {
+            padding: 12px 24px;
+            font-size: 18px;
+            background-color: green;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-open-popup:hover {
+            background-color: #4caf50;
+        }
+
+        .overlay-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .popup-box {
+            background: #fff;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+            width: 320px;
+            text-align: center;
+            opacity: 0;
+            transform: scale(0.8);
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+
+        .form-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #444;
+            text-align: left;
+        }
+
+        .form-input {
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .btn-submit,
+        .btn-close-popup {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .btn-submit {
+            background-color: green;
+            color: #fff;
+        }
+
+        .btn-close-popup {
+            margin-top: 12px;
+            background-color: #e74c3c;
+            color: #fff;
+        }
+
+        .btn-submit:hover,
+        .btn-close-popup:hover {
+            background-color: #4caf50;
+        }
+
+        /* Keyframes for fadeInUp animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Animation for popup */
+        .overlay-container.show {
+            display: flex;
+            opacity: 1;
+        }
+    </style>
+    <body>
+        <h2>Inventaire</h2>
+        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
+
+        <table id="myTable">
+            <thead>
+            <tr class="header">
+                <th scope="col" class="px-4 py-3">Nom</th>
+                <th scope="col" class="px-4 py-3">Quantité</th>
+                <th scope="col" class="px-4 py-3">Date d'expiration</th>
+                <th scope="col" class="px-4 py-3">Type de traitement</th>
+                <th scope="col" class="px-4 py-3">Prix</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in inventory %}
+            <tr class="border-b dark:border-gray-700">
+                <td scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ item.item.name }}</td>
+                <td class="px-4 py-3">{{ item.quantity }}</td>
+                <td class="px-4 py-3">{{ item.expiration_date }}</td>
+                <td class="px-4 py-3">{{ item.item.treatment_type }}</td>
+                <td class="px-4 py-3">${{ item.item.price }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    <button class="btn-open-popup" onclick="togglePopup()">
+      Ajouter un nouvel article
+      </button>
+
+    <div id="popupOverlay"
+         class="overlay-container">
+        <div class="popup-box">
+            <h2 style="color: green;">Popup Form</h2>
+            <form class="form-container">
+                <label class="form-label"
+                       for="name">
+                  Username:
+                  </label>
+                <input class="form-input" type="text"
+                       placeholder="Enter Your Username"
+                       id="name" name="name" required>
+
+                <label class="form-label" for="email">Email:</label>
+                <input class="form-input"
+                       type="email"
+                       placeholder="Enter Your Email"
+                       id="email"
+                       name="email" required>
+
+                <button class="btn-submit"
+                        type="submit">
+                  Submit
+                  </button>
+            </form>
+
+            <button class="btn-close-popup"
+                    onclick="togglePopup()">
+              Close
+              </button>
         </div>
     </div>
-</section>
+
+    <script>
+        function togglePopup() {
+            const overlay = document.getElementById('popupOverlay');
+            overlay.classList.toggle('show');
+        }
+    </script>
+    </body>
 </div>
 {% endblock content %}
