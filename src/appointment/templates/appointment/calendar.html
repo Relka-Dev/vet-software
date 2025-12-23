@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}
+  Calendrier
+{% endblock title %}
+{% block content %}
+  <div class="p-6">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">Calendrier des rendez-vous</h1>
+      <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        Nouveau rendez-vous
+      </button>
+    </div>
+    <div class="bg-white rounded-lg shadow mb-6 p-4 flex justify-between items-center">
+      <div class="flex items-center gap-4">
+        <button class="p-2 hover:bg-gray-100 rounded" aria-label="Jour précédent">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <button class="p-2 hover:bg-gray-100 rounded" aria-label="Jour suivant">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+        <button class="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50">Aujourd'hui</button>
+        <h2 class="text-xl font-semibold ml-4">01 décembre 2025</h2>
+      </div>
+      <div class="flex gap-2">
+        <button class="px-4 py-2 bg-blue-600 text-white rounded">Jour</button>
+        <button class="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50">Liste</button>
+      </div>
+    </div>
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+      <div class="border-b border-gray-200 p-4 bg-gray-50">
+        <span class="text-sm text-gray-600">Toute la journée</span>
+      </div>
+      {% for hour in hours %}
+        <div class="border-b border-gray-200 h-16 flex items-start p-2 hover:bg-gray-50">
+          <span class="text-sm text-gray-600 w-20">{{ hour|stringformat:"02d" }}:00</span>
+          <div class="flex-1 ml-4">
+            {% if hour == 7 %}
+              <div class="bg-blue-600 text-white rounded p-2 text-sm">
+                <div class="font-semibold">Consultation - Choubaka</div>
+                <div class="text-xs opacity-90">7:00 - 7:30</div>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock content %}
