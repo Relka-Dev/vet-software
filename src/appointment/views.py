@@ -5,18 +5,26 @@ from datetime import datetime, timedelta
 from appointment.models import Appointment
 
 
-def calendar_view(request):
-    today = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
-    tomorrow = today + timedelta(days=1)
+def calendar_view(request, year=None, month=None, day=None):
+    if year and month and day:
+        selected_date = timezone.make_aware(datetime(year, month, day))
+    else:
+        selected_date = timezone.now()
+
+    selected_date = selected_date.replace(hour=0, minute=0, second=0, microsecond=0)
+    next_day = selected_date + timedelta(days=1)
+    prev_day = selected_date - timedelta(days=1)
 
     appointments = Appointment.objects.filter(
-        start_date__lt=tomorrow, end_date__gte=today
+        start_date__lt=next_day, end_date__gte=selected_date
     ).select_related('animal', 'employee', 'room', 'emergency_type')
 
     hours = range(8, 24)
 
     context = {
-        'today': today,
+        'selected_date': selected_date,
+        'prev_day': prev_day,
+        'next_day': next_day,
         'hours': hours,
         'appointments': appointments,
     }

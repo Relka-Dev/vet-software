@@ -15,18 +15,23 @@
     </div>
     <div class="bg-white rounded-lg shadow mb-6 p-4 flex justify-between items-center">
       <div class="flex items-center gap-4">
-        <button class="p-2 hover:bg-gray-100 rounded" aria-label="Jour précédent">
+        <a href="{% url 'calendar_date' prev_day.year prev_day.month prev_day.day %}"
+           class="p-2 hover:bg-gray-100 rounded"
+           aria-label="Jour précédent">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
           </svg>
-        </button>
-        <button class="p-2 hover:bg-gray-100 rounded" aria-label="Jour suivant">
+        </a>
+        <a href="{% url 'calendar_date' next_day.year next_day.month next_day.day %}"
+           class="p-2 hover:bg-gray-100 rounded"
+           aria-label="Jour suivant">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
           </svg>
-        </button>
-        <button class="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50">Aujourd'hui</button>
-        <h2 class="text-xl font-semibold ml-4">01 décembre 2025</h2>
+        </a>
+        <a href="{% url 'calendar' %}"
+           class="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50">Aujourd'hui</a>
+        <h2 class="text-xl font-semibold ml-4">{{ selected_date|date:"d F Y" }}</h2>
       </div>
       <div class="flex gap-2">
         <button class="px-4 py-2 bg-blue-600 text-white rounded">Jour</button>
@@ -42,7 +47,7 @@
           <span class="text-sm text-gray-600 w-20">{{ hour }}:00</span>
           <div class="flex-1 ml-4">
             {% for appointment in appointments %}
-              {% if appointment.start_date.hour == hour %}
+              {% if appointment.start_date.day == selected_date.day and appointment.start_date.hour == hour %}
                 <div class="bg-blue-600 text-white rounded p-2 text-sm mb-2">
                   <div class="font-semibold">{{ appointment.emergency_type.name }} - {{ appointment.animal.name }}</div>
                   <div class="text-xs opacity-90">
