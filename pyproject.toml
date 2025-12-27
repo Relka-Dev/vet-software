@@ -44,3 +44,8 @@ ignore = []
 DJANGO_SETTINGS_MODULE = "vet_software.settings"
 python_files = ["test_*.py", "*_test.py", "tests.py"]
 addopts = "--cov=. --cov-report=html --cov-report=term-missing"
+
+[tool.djlint]
+profile = "django"
+ignore = "T028,H006,H030,H031"
+

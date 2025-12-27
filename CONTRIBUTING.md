@@ -7,6 +7,7 @@ This guide covers the complete development workflow for the vet-software project
 - [Contributing to vet-software](#contributing-to-vet-software)
   - [Table of Contents](#table-of-contents)
   - [Prerequisites](#prerequisites)
+  - [VS Code Setup](#vs-code-setup)
   - [Getting Started](#getting-started)
   - [Development Workflow](#development-workflow)
   - [Commit Message Conventions](#commit-message-conventions)
@@ -23,6 +24,36 @@ This guide covers the complete development workflow for the vet-software project
 - **Node.js 20.x LTS or higher** (for Tailwind CSS compilation)
 - **Git**
 - **Virtual environment tool** (venv)
+- **VS Code** (recommended)
+
+---
+
+## VS Code Setup
+
+To ensure consistent code formatting across the team, install the following VS Code extensions:
+
+### Required Extensions
+
+1. **Better Jinja** (`samuelcolvin.jinjahtml`)
+
+2. **Black Formatter** (`ms-python.black-formatter`)
+
+3. **djLint** (`monosans.djlint`)
+
+### Installation
+
+```bash
+# Open VS Code
+# Press Ctrl+Shift+X (on Windows/Linux)
+# Search for and install:
+# - Better Jinja
+# - Black Formatter
+# - djLint
+```
+
+### Settings
+
+The project includes a `.vscode/settings.json` file:
 
 ---
 
