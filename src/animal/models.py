@@ -22,7 +22,7 @@ class Animal(models.Model):
         verbose_name_plural = "Animaux"
 
     def __str__(self):
-        return f"Name : {self.name} - Birthday : {self.birthday} - Federal Identification : {self.federal_identification} - Family : {self.family}"
+        return f"{self.name} {self.family.main_contact.last_name} ({self.birthday})"
 
 
 class SOAPNote(models.Model):

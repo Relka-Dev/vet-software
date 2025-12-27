@@ -1,16 +1,16 @@
 {% extends "animal/base.html" %}
 {% block title %}
-Animal note
-{%endblock %}
+    Animal note
+{% endblock title %}
 {% block content %}
-<div class="text-3xl text-green-800">
-    <p>
-        <h1>{{ animal_note.animal.name }} {{ animal_note.animal.federal_identification }}</h1>
+    <div class="text-3xl text-green-800">
+        <p>
+            <h1>{{ animal_note.animal.name }} {{ animal_note.animal.federal_identification }}</h1>
             <p>Content: {{ animal_note.content }}</p>
             <p>Subjectif: {{ animal_note.text_subjective }}</p>
             <p>Objectif: {{ animal_note.text_objective }}</p>
             <p>Assessment: {{ animal_note.text_assessment }}</p>
             <p>Plan: {{ animal_note.text_plan }}</p>
-    </p>
-</div>
+        </p>
+    </div>
 {% endblock content %}

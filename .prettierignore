@@ -1,0 +1,8 @@
+# Ignore all HTML files (Django templates)
+**/*.html
+
+# Ignore Django template directories
+**/templates/
+
+# Keep formatting for other files
+!static/**/*.html

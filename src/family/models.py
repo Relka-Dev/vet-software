@@ -19,7 +19,7 @@ class Family(models.Model):
         verbose_name_plural = "Familles"
 
     def __str__(self):
-        return f"Main Contact : {str(self.main_contact)}"
+        return f"{str(self.main_contact)}"
 
 
 class Extra_family_member(models.Model):

@@ -71,89 +71,50 @@ class Command(BaseCommand):
         equipment3 = Equipment.objects.create(name="Appareil à rayons X")
         equipment4 = Equipment.objects.create(name="Échographe")
 
-        # Create Appointments
-        now = timezone.now()
+        # Create Appointments - one or more per day for next month
+        now = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        rooms = [room1, room2, room3]
+        emergency_types = [emergency_routine, emergency_urgent, emergency_followup]
+        procedures = [procedure1, procedure2, procedure3, procedure4]
+        equipment_list = [equipment1, equipment2, equipment3, equipment4]
 
-        appointment1 = Appointment.objects.create(
-            animal=animals[0],
-            room=room1,
-            employee=employees[0],
-            emergency_type=emergency_routine,
-            start_date=now + timedelta(days=3, hours=9),
-            end_date=now + timedelta(days=3, hours=10),
-        )
-        appointment2 = Appointment.objects.create(
-            animal=animals[1],
-            room=room3,
-            employee=employees[1],
-            emergency_type=emergency_urgent,
-            start_date=now + timedelta(days=4, hours=14),
-            end_date=now + timedelta(days=4, hours=15),
-        )
-        appointment3 = Appointment.objects.create(
-            animal=animals[2],
-            room=room1,
-            employee=employees[0],
-            emergency_type=emergency_followup,
-            start_date=now + timedelta(days=5, hours=11),
-            end_date=now + timedelta(days=5, hours=11, minutes=30),
-        )
-        appointment4 = Appointment.objects.create(
-            animal=animals[0],
-            room=room2,
-            employee=employees[1],
-            emergency_type=emergency_urgent,
-            start_date=now + timedelta(days=7, hours=10),
-            end_date=now + timedelta(days=7, hours=12),
-        )
+        appointments = []
 
-        # Link Appointments with Procedures
-        AppointmentProcedure.objects.create(
-            appointment=appointment1, procedure=procedure1, quantity=1
-        )
-        AppointmentProcedure.objects.create(
-            appointment=appointment2, procedure=procedure2, quantity=1
-        )
-        AppointmentProcedure.objects.create(
-            appointment=appointment2, procedure=procedure3, quantity=1
-        )
-        AppointmentProcedure.objects.create(
-            appointment=appointment3, procedure=procedure1, quantity=1
-        )
-        AppointmentProcedure.objects.create(
-            appointment=appointment4, procedure=procedure4, quantity=1
-        )
+        hour_options = [8, 12, 15, 16]
+        duration_options = [0.5, 1, 1.5, 2]
+        for day in range(30):
+            num_appointments = (day % 3) + 1
 
-        # Link Appointments with Equipment
-        AppointmentEquipment.objects.create(
-            appointment=appointment1, equipment=equipment1
-        )
-        AppointmentEquipment.objects.create(
-            appointment=appointment1, equipment=equipment2
-        )
-        AppointmentEquipment.objects.create(
-            appointment=appointment2, equipment=equipment3
-        )
-        AppointmentEquipment.objects.create(
-            appointment=appointment3, equipment=equipment1
-        )
-        AppointmentEquipment.objects.create(
-            appointment=appointment4, equipment=equipment4
-        )
+            for appt_num in range(num_appointments):
+                hour = hour_options[appt_num % len(hour_options)]
+                duration = duration_options[(day + appt_num) % len(duration_options)]
 
-        # Link Appointments with Items
-        AppointmentItem.objects.create(
-            appointment=appointment1, item=items[0], quantity=1
-        )
-        AppointmentItem.objects.create(
-            appointment=appointment2, item=items[1], quantity=2
-        )
-        AppointmentItem.objects.create(
-            appointment=appointment3, item=items[0], quantity=1
-        )
-        AppointmentItem.objects.create(
-            appointment=appointment4, item=items[2], quantity=1
-        )
+                appointment = Appointment.objects.create(
+                    animal=animals[day % len(animals)],
+                    room=rooms[day % len(rooms)],
+                    employee=employees[day % len(employees)],
+                    emergency_type=emergency_types[day % len(emergency_types)],
+                    start_date=now + timedelta(days=day, hours=hour),
+                    end_date=now + timedelta(days=day, hours=hour + duration),
+                )
+                appointments.append(appointment)
+
+                AppointmentProcedure.objects.create(
+                    appointment=appointment,
+                    procedure=procedures[0],
+                    quantity=1,
+                )
+
+                AppointmentEquipment.objects.create(
+                    appointment=appointment,
+                    equipment=equipment_list[0],
+                )
+
+                AppointmentItem.objects.create(
+                    appointment=appointment,
+                    item=items[0],
+                    quantity=1,
+                )
 
         self.stdout.write(
             self.style.SUCCESS(

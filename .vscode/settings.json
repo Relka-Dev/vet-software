@@ -8,6 +8,12 @@
     }
   },
 
+  // Jinja HTML - formatage avec djLint
+  "[jinja-html]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "monosans.djlint"
+  },
+
   // Python settings
   "python.formatting.provider": "none",
   "black-formatter.args": ["--skip-string-normalization"],
@@ -16,6 +22,14 @@
   // Files settings
   "files.trimTrailingWhitespace": true,
   "files.insertFinalNewline": true,
+  "files.associations": {
+    "**/templates/**/*.html": "jinja-html"
+  },
+
+  // Emmet for Django templates
+  "emmet.includeLanguages": {
+    "jinja-html": "html"
+  },
 
   // Editor settings
   "editor.rulers": [88]
