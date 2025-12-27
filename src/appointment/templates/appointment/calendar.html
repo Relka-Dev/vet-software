@@ -39,14 +39,19 @@
       </div>
       {% for hour in hours %}
         <div class="border-b border-gray-200 h-16 flex items-start p-2 hover:bg-gray-50">
-          <span class="text-sm text-gray-600 w-20">{{ hour|stringformat:"02d" }}:00</span>
+          <span class="text-sm text-gray-600 w-20">{{ hour }}:00</span>
           <div class="flex-1 ml-4">
-            {% if hour == 7 %}
-              <div class="bg-blue-600 text-white rounded p-2 text-sm">
-                <div class="font-semibold">Consultation - Choubaka</div>
-                <div class="text-xs opacity-90">7:00 - 7:30</div>
-              </div>
-            {% endif %}
+            {% for appointment in appointments %}
+              {% if appointment.start_date.hour == hour %}
+                <div class="bg-blue-600 text-white rounded p-2 text-sm mb-2">
+                  <div class="font-semibold">{{ appointment.emergency_type.name }} - {{ appointment.animal.name }}</div>
+                  <div class="text-xs opacity-90">
+                    {{ appointment.start_date|date:"H:i" }} - {{ appointment.end_date|date:"H:i" }}
+                    • {{ appointment.employee.person.first_name }} {{ appointment.employee.person.last_name }}
+                  </div>
+                </div>
+              {% endif %}
+            {% endfor %}
           </div>
         </div>
       {% endfor %}
