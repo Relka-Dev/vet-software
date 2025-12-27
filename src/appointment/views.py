@@ -19,6 +19,17 @@ def calendar_view(request, year=None, month=None, day=None):
         start_date__lt=next_day, end_date__gte=selected_date
     ).select_related('animal', 'employee', 'room', 'emergency_type')
 
+    appointments_with_duration = []
+    for appt in appointments:
+        duration_minutes = (appt.end_date - appt.start_date).total_seconds() / 60
+        height_px = int((duration_minutes / 60) * 56)
+        appointments_with_duration.append(
+            {
+                'appointment': appt,
+                'height_px': height_px,
+            }
+        )
+
     hours = range(8, 24)
 
     context = {
@@ -26,7 +37,7 @@ def calendar_view(request, year=None, month=None, day=None):
         'prev_day': prev_day,
         'next_day': next_day,
         'hours': hours,
-        'appointments': appointments,
+        'appointments': appointments_with_duration,
     }
 
     return render(request, 'appointment/calendar.html', context)
