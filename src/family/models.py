@@ -3,7 +3,7 @@ from person.models import Person
 
 
 class Family(models.Model):
-    """Famille avec le contact principal"""
+    """Membres d'une famille"""
 
     main_contact = models.ForeignKey(
         Person,
@@ -23,7 +23,7 @@ class Family(models.Model):
 
 
 class Extra_family_member(models.Model):
-    """Membre additionnel d'une famille"""
+    """Membre d'une famille (qui n'est pas le contact principal)"""
 
     family = models.ForeignKey(
         Family,

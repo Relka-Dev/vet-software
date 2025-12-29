@@ -30,8 +30,7 @@ class Command(BaseCommand):
 
         # Create extra family members
         Extra_family_member.objects.create(family=family1, person=persons[0])
-        Extra_family_member.objects.create(family=family1, person=persons[1])
-        Extra_family_member.objects.create(family=family2, person=persons[3])
+        Extra_family_member.objects.create(family=family2, person=persons[1])
 
         self.stdout.write(
             self.style.SUCCESS(
