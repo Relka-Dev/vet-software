@@ -18,7 +18,8 @@ def add_item(request):
         name = request.POST.get('name')
         reminder = request.POST.get('reminder')
         price = request.POST.get('price')
-        treatment_type = request.POST.get('treatment_type')
+        treatment_type_id = request.POST.get('treatment_type')
+        treatment_type = TreatmentType.objects.get(id=treatment_type_id)
         Item.objects.create(
             name=name, reminder=reminder, price=price, treatment_type=treatment_type
         )

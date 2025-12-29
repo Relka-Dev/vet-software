@@ -43,6 +43,7 @@
                         </div>
                         <!-- Modal body -->
                         <form method="post" action="{% url 'add_item' %}" class="p-4 md:p-5">
+                            {% csrf_token %}
                             <div class="grid gap-4 mb-4 grid-cols-2">
                                 <div class="col-span-2">
                                     <label for="name" class="block mb-2 text-sm font-medium text-gray-900">Nom du traitement</label>
@@ -80,6 +81,7 @@
                                            name="reminder"
                                            id="reminder"
                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                           value="True"
                                            required="">
                                 </div>
                                 <div class="col-span-2 sm:col-span-1">
