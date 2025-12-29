@@ -3,14 +3,70 @@
     Animal note
 {% endblock title %}
 {% block content %}
-    <div class="text-3xl text-green-800">
-        <p>
-            <h1>{{ animal_note.animal.name }} {{ animal_note.animal.federal_identification }}</h1>
-            <p>Content: {{ animal_note.content }}</p>
-            <p>Subjectif: {{ animal_note.text_subjective }}</p>
-            <p>Objectif: {{ animal_note.text_objective }}</p>
-            <p>Assessment: {{ animal_note.text_assessment }}</p>
-            <p>Plan: {{ animal_note.text_plan }}</p>
-        </p>
-    </div>
+    <h1 class="text-2xl font-bold mb-4">Note</h1>
+    <form>
+        <div class="grid gap-6 mb-6 md:grid-cols-2">
+            <div>
+                <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900">Prénom</label>
+                <input type="text"
+                       id="first_name"
+                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 placeholder:text-gray-400 disabled:bg-transparent"
+                       placeholder="Prénom de l'animal"
+                       value="{{ animal_note.animal.name }}"
+                       required
+                       disabled />
+            </div>
+            <div>
+                <label for="last_name" class="block mb-2 text-sm font-medium text-gray-900">Nom</label>
+                <input type="text"
+                       id="last_name"
+                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 placeholder:text-gray-400 disabled:bg-transparent"
+                       placeholder="Nom de l'animal"
+                       required
+                       disabled />
+            </div>
+        </div>
+        <div>
+            <label for="description"
+                   class="block mb-2 text-sm font-medium text-gray-900">Description</label>
+            <input type="text"
+                   id="description"
+                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 placeholder:text-gray-400"
+                   placeholder="Entrer une description..."
+                   value="{{ animal_note.content }}"
+                   required />
+        </div>
+        <div>
+            <label for="subjectif" class="block mb-2 text-sm font-medium text-gray-900">Subjectif</label>
+            <textarea id="subjectif"
+                      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 placeholder:text-gray-400"
+                      rows="4"
+                      placeholder="Écrire l'observation subjective...">{{ animal_note.text_subjective }}</textarea>
+        </div>
+        <div>
+            <label for="objectif" class="block mb-2 text-sm font-medium text-gray-900">Objectif</label>
+            <textarea id="objectif"
+                      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 placeholder:text-gray-400"
+                      rows="4"
+                      placeholder="Écrire l'observation objective...">{{ animal_note.text_objective }}</textarea>
+        </div>
+        <div>
+            <label for="evaluation" class="block mb-2 text-sm font-medium text-gray-900">Évaluation</label>
+            <textarea id="evaluation"
+                      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 placeholder:text-gray-400"
+                      rows="4"
+                      placeholder="Écrire l'évaluation...">{{ animal_note.text_assessment }}</textarea>
+        </div>
+        <div class="mb-6">
+            <label for="plan" class="block mb-2 text-sm font-medium text-gray-900">Plan</label>
+            <textarea id="plan"
+                      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 placeholder:text-gray-400"
+                      rows="4"
+                      placeholder="Écrire le plan d'action...">{{ animal_note.text_plan }}</textarea>
+        </div>
+        <button type="submit"
+                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center placeholder:text-gray-400">
+            Submit
+        </button>
+    </form>
 {% endblock content %}
