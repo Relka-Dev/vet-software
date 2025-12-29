@@ -3,15 +3,40 @@
   Animal List
 {% endblock title %}
 {% block content %}
-  <div class="text-3xl text-green-800">
-    <h1>Animal</h1>
-    {% for animal in animals %}
-      <p>
-        <h1>
-          <a href="{% url 'animal_note' pk=animal.pk %}">{{ animal.name }}</a>
-        </h1>
-        <small> <span class="animal-federal-id">{{ animal.federal_identification }}</span> </small>
-      </p>
-    {% endfor %}
+  <h1 class="text-2xl font-bold mt-4">Animaux</h1>
+  <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-10">
+    <table class="w-full text-sm text-left rtl:text-right text-gray-500 ">
+      <thead class="text-xs text-gray-700 uppercase bg-gray-300 ">
+        <tr>
+          <th scope="col" class="px-6 py-3">Prénom</th>
+          <th scope="col" class="px-6 py-3">Nom de famille</th>
+          <th scope="col" class="px-6 py-3">Date de naissance</th>
+          <th scope="col" class="px-6 py-3">Identification</th>
+          <th scope="col" class="px-6 py-3">Contact</th>
+          <th scope="col" class="px-6 py-3">
+            <span class="sr-only">Edit</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for animal in animals %}
+          <tr class="bg-white border-b border-gray-200 hover:bg-gray-50 ">
+            <th scope="row"
+                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap hover:underline">
+              <a href="{% url 'animal_note' pk=animal.pk %}">{{ animal.name }}</a>
+            </th>
+            <td class="px-6 py-4">{{ animal.family.main_contact.last_name }}</td>
+            <td class="px-6 py-4">{{ animal.birthday|date:"d/m/Y" }}</td>
+            <td class="px-6 py-4">{{ animal.federal_identification }}</td>
+            <td class="px-6 py-4 hover:underline">
+              <a href="{% url 'animal_family_contacts' pk=animal.pk %}">{{ animal.family.main_contact }}</a>
+            </td>
+            <td class="px-6 py-4 text-right">
+              <a href="#" class="font-medium text-blue-600 hover:underline">Edit</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
 {% endblock content %}
