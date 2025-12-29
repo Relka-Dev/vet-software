@@ -1,16 +1,19 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from .models import Inventory, Item, TreatmentType
 
 
 def inventory_list(request):
     inventory = Inventory.objects.all()
-    return render(request, 'inventory/inventory_list.html', {'inventory': inventory})
+    all_types = TreatmentType.objects.all()
+
+    return render(
+        request,
+        'inventory/inventory_list.html',
+        {'inventory': inventory, 'all_types': all_types},
+    )
 
 
 def add_item(request):
-    all_types = TreatmentType.objects.all()
-    inventory = Inventory.objects.all()
-
     if request.method == 'POST':
         name = request.POST.get('name')
         reminder = request.POST.get('reminder')
@@ -26,8 +29,4 @@ def add_item(request):
             item=Item.objects.last(), quantity=quantity, expiration_date=expiration_date
         )
 
-    return render(
-        request,
-        'inventory/inventory_list.html',
-        {'inventory': inventory, 'all_types': all_types},
-    )
+    return redirect('inventory_list')

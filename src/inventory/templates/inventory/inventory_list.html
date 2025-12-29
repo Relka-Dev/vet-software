@@ -6,14 +6,17 @@
     <div class="p-6">
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-3xl font-bold text-gray-900 mb-2">Inventaire</h1>
+            <!-- Add Button -->
             <button data-modal-target="new-item"
                     data-modal-toggle="new-item"
-                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2">
+                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
+                    onclick="toggle()">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                 </svg>
                 Nouveau Article
             </button>
+            <!-- Popup modal -->
             <div id="new-item"
                  tabindex="-1"
                  aria-hidden="true"
@@ -26,7 +29,8 @@
                             <h3 class="text-lg font-semibold text-gray-900">Créer un nouvel article</h3>
                             <button type="button"
                                     class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
-                                    data-modal-toggle="new-item">
+                                    data-modal-toggle="new-item"
+                                    onclick="toggle()">
                                 <svg class="w-3 h-3"
                                      aria-hidden="true"
                                      xmlns="http://www.w3.org/2000/svg"
@@ -50,13 +54,16 @@
                                            required="">
                                 </div>
                                 <div class="col-span-2">
-                                    <label for="reminder" class="block mb-2 text-sm font-medium text-gray-900">Rappel</label>
-                                    <input type="text"
-                                           name="reminder"
-                                           id="reminder"
-                                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
-                                           placeholder="Exemple: Toutes les 8 heures"
-                                           required="">
+                                    <label for="treatment_type"
+                                           class="block mb-2 text-sm font-medium text-gray-900">
+                                        Type de traitement
+                                    </label>
+                                    <select id="treatment_type"
+                                            name="treatment_type"
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 ">
+                                        <option selected="">Select category</option>
+                                        {% for type in all_types %}<option value="{{ type.id }}">{{ type.type }}</option>{% endfor %}
+                                    </select>
                                 </div>
                                 <div class="col-span-2 sm:col-span-1">
                                     <label for="price" class="block mb-2 text-sm font-medium text-gray-900">Prix</label>
@@ -68,12 +75,12 @@
                                            required="">
                                 </div>
                                 <div class="col-span-2 sm:col-span-1">
-                                    <label for="category" class="block mb-2 text-sm font-medium text-gray-900">Type de traitement</label>
-                                    <select id="category"
-                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 ">
-                                        <option selected="">Select category</option>
-                                        {% for type in all_types %}<option value="{{ type }}">{{ type }}</option>{% endfor %}
-                                    </select>
+                                    <label for="reminder" class="block mb-2 text-sm font-medium text-gray-900">Rappel</label>
+                                    <input type="checkbox"
+                                           name="reminder"
+                                           id="reminder"
+                                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                           required="">
                                 </div>
                                 <div class="col-span-2 sm:col-span-1">
                                     <label for="quantity" class="block mb-2 text-sm font-medium text-gray-900">Quantité</label>
@@ -112,7 +119,15 @@
                     </div>
                 </div>
             </div>
+            <script>
+                function toggle() {
+                    const overlay = document.getElementById('new-item');
+                    overlay.classList.toggle('hidden');
+                    overlay.classList.toggle('flex');
+                }
+            </script>
         </div>
+        <!-- Search bar -->
         <div class="pb-4">
             <label for="table-search" class="sr-only">Search</label>
             <div class="relative mt-1">
@@ -131,6 +146,7 @@
                        placeholder="Search for items">
             </div>
         </div>
+        <!-- Inventory Table -->
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-300">
