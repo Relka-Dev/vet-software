@@ -21,4 +21,4 @@ class Person(models.Model):
         verbose_name_plural = "Personnes"
 
     def __str__(self):
-        return f"First Name : {self.first_name} - Last Name : {self.last_name} "
+        return f"{self.last_name}, {self.first_name}"

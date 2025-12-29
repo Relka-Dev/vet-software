@@ -1,15 +1,17 @@
 {% extends "animal/base.html" %}
 {% block title %}
-Animal List
-{%endblock %}
+  Animal List
+{% endblock title %}
 {% block content %}
-<div class="text-3xl text-green-800">
-  <h1>Animal</h1>
+  <div class="text-3xl text-green-800">
+    <h1>Animal</h1>
     {% for animal in animals %}
-    <p>
-      <h1> <a href="{% url 'animal_note' pk=animal.pk %}">{{ animal.name }}</a> </h1>
-      <small> <span class="animal-federal-id">{{ animal.federal_identification }}</span> </small>
-    </p>
+      <p>
+        <h1>
+          <a href="{% url 'animal_note' pk=animal.pk %}">{{ animal.name }}</a>
+        </h1>
+        <small> <span class="animal-federal-id">{{ animal.federal_identification }}</span> </small>
+      </p>
     {% endfor %}
-</div>
+  </div>
 {% endblock content %}

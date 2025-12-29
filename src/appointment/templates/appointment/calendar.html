@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}
+  Calendrier
+{% endblock title %}
+{% block content %}
+  <div class="p-6">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">Calendrier des rendez-vous</h1>
+      <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        Nouveau rendez-vous
+      </button>
+    </div>
+    <div class="bg-white rounded-lg shadow mb-6 p-4 flex justify-between items-center">
+      <div class="flex items-center gap-4">
+        <a href="{% url 'calendar_date' prev_day.year prev_day.month prev_day.day %}"
+           class="p-2 hover:bg-gray-100 rounded"
+           aria-label="Jour précédent">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </a>
+        <a href="{% url 'calendar_date' next_day.year next_day.month next_day.day %}"
+           class="p-2 hover:bg-gray-100 rounded"
+           aria-label="Jour suivant">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </a>
+        <a href="{% url 'calendar' %}"
+           class="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50">Aujourd'hui</a>
+        <h2 class="text-xl font-semibold ml-4">{{ selected_date|date:"d F Y" }}</h2>
+      </div>
+      <div class="flex gap-2">
+        <button class="px-4 py-2 bg-blue-600 text-white rounded">Jour</button>
+        <button class="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50">Liste</button>
+      </div>
+    </div>
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+      <div class="border-b border-gray-200 p-4 bg-gray-50">
+        <span class="text-sm text-gray-600">Toute la journée</span>
+      </div>
+      {% for hour in hours %}
+        <div class="border-b border-gray-200 h-16 flex items-start p-2 hover:bg-gray-50">
+          <span class="text-sm text-gray-600 w-20">{{ hour }}:00</span>
+          <div class="flex-1 ml-4">
+            {% for item in appointments %}
+              {% if item.appointment.start_date.day == selected_date.day and item.appointment.start_date.hour == hour %}
+                <div class="bg-blue-600 text-white rounded p-2 text-sm mb-2"
+                     style="min-height: {{ item.height_px }}px">
+                  <div class="font-semibold">{{ item.appointment.emergency_type.name }} - {{ item.appointment.animal.name }}</div>
+                  <div class="text-xs opacity-90">
+                    {{ item.appointment.start_date|date:"H:i" }} - {{ item.appointment.end_date|date:"H:i" }}
+                    • {{ item.appointment.employee.person.first_name }} {{ item.appointment.employee.person.last_name }}
+                  </div>
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock content %}
