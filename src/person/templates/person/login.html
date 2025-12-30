@@ -1,22 +1,37 @@
 {% extends 'base.html' %}
 
-{% block title %}Se connecter{% endblock %}
-
 {% block content %}
-<div class="max-w-md mx-auto mt-8">
-  <h1 class="text-2xl mb-4">Se connecter</h1>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.non_field_errors }}
-    <div class="mb-4">
-      <label class="block">Nom d'utilisateur</label>
-      {{ form.username }}
-    </div>
-    <div class="mb-4">
-      <label class="block">Mot de passe</label>
-      {{ form.password }}
-    </div>
-    <button type="submit" class="px-3 py-1 bg-blue-600 text-white rounded">Se connecter</button>
-  </form>
+<div class="max-w-md mx-auto mt-10">
+    <h2 class="text-2xl font-bold mb-6">Connexion</h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+
+        <div class="mb-4">
+            <label for="{{ form.email.id_for_label }}" class="block mb-2">Email</label>
+            {{ form.email }}
+            {% if form.email.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.email.errors }}</p>
+            {% endif %}
+        </div>
+
+        <div class="mb-4">
+            <label for="{{ form.password.id_for_label }}" class="block mb-2">Mot de passe</label>
+            {{ form.password }}
+            {% if form.password.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.password.errors }}</p>
+            {% endif %}
+        </div>
+
+        <button type="submit" style="background-color: #166534; color: white; font-weight: bold; padding: 12px 24px; border-radius: 4px;">
+            Se connecter
+        </button>
+    </form>
 </div>
 {% endblock %}
