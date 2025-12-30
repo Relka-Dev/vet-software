@@ -8,13 +8,29 @@ def animal_list(request):
 
 
 def display_animal_note(request, pk):
+    animal = None
+    animal_note = None
+    animal_notes = []
     try:
-        if pk:
-            animal_note = SOAPNote.objects.get(animal__pk=pk)
+        animal_note = SOAPNote.objects.get(pk=pk)
+        animal = animal_note.animal
+        animal_notes = SOAPNote.objects.filter(animal=animal).order_by('-created_at')
     except SOAPNote.DoesNotExist:
-        animal_note = None
+        try:
+            animal = Animal.objects.get(pk=pk)
+            animal_notes = SOAPNote.objects.filter(animal=animal).order_by(
+                '-created_at'
+            )
+            if animal_notes.exists():
+                animal_note = animal_notes.first()
+        except Animal.DoesNotExist:
+            pass
 
-    return render(request, 'animal/animal_note.html', {'animal_note': animal_note})
+    return render(
+        request,
+        'animal/animal_note.html',
+        {'animal': animal, 'animal_note': animal_note, 'animal_notes': animal_notes},
+    )
 
 
 def animal_family_contacts(request, pk):
