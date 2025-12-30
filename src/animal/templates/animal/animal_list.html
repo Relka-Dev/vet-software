@@ -23,7 +23,7 @@
           <tr class="bg-white border-b border-gray-200 hover:bg-gray-50 ">
             <th scope="row"
                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap hover:underline">
-              <a href="{% url 'animal_note' pk=animal.pk %}">{{ animal.name }}</a>
+              <a href="{% url 'animal_note_by_animal' animal_pk=animal.pk %}">{{ animal.name }}</a>
             </th>
             <td class="px-6 py-4">{{ animal.family.main_contact.last_name }}</td>
             <td class="px-6 py-4">{{ animal.birthday|date:"d/m/Y" }}</td>
