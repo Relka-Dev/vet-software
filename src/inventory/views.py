@@ -36,7 +36,7 @@ def add_item(request):
 def update_item(request, pk):
     item = Item.objects.get(id=pk)
 
-    if request.method == 'POST':
+    if request.method == 'POST' and 'edit-button' in request.POST:
         item.name = request.POST.get('name')
         item.reminder = request.POST.get('reminder')
         item.price = request.POST.get('price')
@@ -44,6 +44,10 @@ def update_item(request, pk):
         item.treatment_type = TreatmentType.objects.get(id=treatment_type_id)
         item.save()
 
+        return redirect('inventory_list')
+
+    if request.method == 'POST' and 'delete-button' in request.POST:
+        item.delete()
         return redirect('inventory_list')
 
     return render(request, 'inventory/update_item.html', {'item': item})
