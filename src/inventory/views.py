@@ -31,3 +31,19 @@ def add_item(request):
         )
 
     return redirect('inventory_list')
+
+
+def update_item(request, pk):
+    item = Item.objects.get(id=pk)
+
+    if request.method == 'POST':
+        item.name = request.POST.get('name')
+        item.reminder = request.POST.get('reminder')
+        item.price = request.POST.get('price')
+        treatment_type_id = request.POST.get('treatment_type')
+        item.treatment_type = TreatmentType.objects.get(id=treatment_type_id)
+        item.save()
+
+        return redirect('inventory_list')
+
+    return render(request, 'inventory/update_item.html', {'item': item})
