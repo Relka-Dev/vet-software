@@ -19,4 +19,6 @@ urlpatterns = [
         views.animal_family_contacts,
         name='animal_family_contacts',
     ),
+    path('add_animal/', views.add_animal, name='add_animal'),
+    path('update_animal/<int:pk>/', views.update_animal, name='update_animal'),
 ]
