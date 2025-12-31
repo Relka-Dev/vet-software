@@ -56,6 +56,17 @@ class Command(BaseCommand):
 
         # SOAP Notes
         SOAPNote.objects.create(
+            content="Détartrage et nettoyage",
+            created_at=timezone.now() - timedelta(days=9),
+            animal=animal1,
+            text_subjective="Animal en bonne santé",
+            text_objective="Température normale, poids stable à 15kg",
+            text_assessment="Aucun problème détecté",
+            text_plan="Détartrage et nettoyage effectués. Prochain contrôle dans a 1an.",
+            created_by=employees[1],
+            validated_by=employees[1],
+        )
+        SOAPNote.objects.create(
             content="Vaccination annuelle",
             created_at=timezone.now() - timedelta(days=10),
             animal=animal1,

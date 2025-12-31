@@ -2,8 +2,8 @@
 {% block title %}
   Animal List
 {% endblock title %}
-{% block content %}
-  <h1 class="text-2xl font-bold mt-4">Animaux</h1>
+{% block animal_content %}
+  <h3 class="text-2xl font-bold mb-4">Liste</h3>
   <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-10">
     <table class="w-full text-sm text-left rtl:text-right text-gray-500 ">
       <thead class="text-xs text-gray-700 uppercase bg-gray-300 ">
@@ -23,7 +23,7 @@
           <tr class="bg-white border-b border-gray-200 hover:bg-gray-50 ">
             <th scope="row"
                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap hover:underline">
-              <a href="{% url 'animal_note' pk=animal.pk %}">{{ animal.name }}</a>
+              <a href="{% url 'animal_note_by_animal' animal_pk=animal.pk %}">{{ animal.name }}</a>
             </th>
             <td class="px-6 py-4">{{ animal.family.main_contact.last_name }}</td>
             <td class="px-6 py-4">{{ animal.birthday|date:"d/m/Y" }}</td>
@@ -39,4 +39,4 @@
       </tbody>
     </table>
   </div>
-{% endblock content %}
+{% endblock animal_content %}
