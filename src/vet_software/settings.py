@@ -141,3 +141,8 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'compressor.finders.CompressorFinder',
 )
+
+AUTHENTICATION_BACKENDS = [
+    'person.auth_backends.PersonAuthBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
