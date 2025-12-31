@@ -19,6 +19,7 @@ def display_animal_note(request, animal_pk, note_pk):
     animal_note = None
     animal_notes = []
     form = None
+    new_form = None
 
     if note_pk:
         try:
@@ -40,12 +41,27 @@ def display_animal_note(request, animal_pk, note_pk):
         except Animal.DoesNotExist:
             pass
 
-    if request.method == 'POST' and animal_note:
-        form = SOAPNoteForm(request.POST, instance=animal_note)
-        if form.is_valid():
-            form.save()
+    if request.method == 'POST':
+        is_new_note = request.POST.get('action') == 'new'
+
+        if is_new_note:
+            form = SOAPNoteForm(request.POST)
+            if form.is_valid():
+                new_note = form.save(commit=False)
+                new_note.animal = animal
+                new_note.save()
+                return redirect('animal_note', animal_pk=animal.id, note_pk=new_note.id)
+        else:
+            form = SOAPNoteForm(request.POST, instance=animal_note)
+            if form.is_valid():
+                form.save()
+                return redirect(
+                    'animal_note', animal_pk=animal.id, note_pk=animal_note.id
+                )
+            new_form = SOAPNoteForm()
     else:
         form = SOAPNoteForm(instance=animal_note)
+        new_form = SOAPNoteForm()
 
     return render(
         request,
@@ -55,6 +71,7 @@ def display_animal_note(request, animal_pk, note_pk):
             'animal_note': animal_note,
             'animal_notes': animal_notes,
             'form': form,
+            'new_form': new_form,
         },
     )
 

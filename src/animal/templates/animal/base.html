@@ -15,7 +15,7 @@
                 {{ animal.name }} {{ animal.family.main_contact.last_name }}
                 <span class="text-base font-normal text-gray-500 ml-2">(né le : {{ animal.birthday|date:"d/m/Y" }})</span>
                 <span class="text-sm font-normal text-gray-500 ml-2">
-                    <button onclick="toggleModal('edit-note')"
+                    <button onclick="toggleModal('new-note')"
                             class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -116,8 +116,19 @@
     <script>
     function toggleModal(modalId) {
         const modal = document.getElementById(modalId);
-        modal.classList.toggle('hidden');
-        modal.classList.toggle('flex');
+        if (modal) {
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                modal.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+            } else {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                modal.setAttribute('aria-hidden', 'true');
+                document.body.style.overflow = 'auto';
+            }
+    }
     }
     </script>
 {% endblock content %}
