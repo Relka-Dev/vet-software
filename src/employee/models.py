@@ -44,29 +44,85 @@ class Employee(models.Model):
         return f"{self.person} - {self.first_engagement_date} - {self.role}"
 
 
-class AvailabilityRange(models.Model):
-    """Périodes de temps"""
+class OpenHours(models.Model):
+    """Heures d'ouverture du cabinet vétérinaire"""
+
+    DAYS_OF_WEEK = [
+        (0, "Lundi"),
+        (1, "Mardi"),
+        (2, "Mercredi"),
+        (3, "Jeudi"),
+        (4, "Vendredi"),
+        (5, "Samedi"),
+        (6, "Dimanche"),
+    ]
+
+    start_date = models.DateField()
+    end_date = models.DateField()
+    day_of_week = models.IntegerField(choices=DAYS_OF_WEEK)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+
+    class Meta:
+        verbose_name = "Heure d'ouverture"
+        verbose_name_plural = "Heures d'ouverture"
+
+    def __str__(self):
+        return f"{self.get_day_of_week_display()} : {self.start_time} - {self.end_time} ({self.start_date} to {self.end_date})"
+
+
+class OpenException(models.Model):
+    """Exceptions aux heures d'ouverture du cabinet vétérinaire"""
 
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
+    is_open = models.BooleanField(default=False)
 
     class Meta:
-        verbose_name = "Période de disponibilité"
-        verbose_name_plural = "Périodes de disponibilité"
+        verbose_name = "Exception aux heures d'ouverture"
+        verbose_name_plural = "Exceptions aux heures d'ouverture"
 
     def __str__(self):
-        return f"Start Date : {self.start_date} - End Date : {self.end_date}"
+        status = "Ouvert" if self.is_open else "Fermé"
+        return f"{self.start_date} to {self.end_date} : {status}"
 
 
 class AvailabilityEmployee(models.Model):
     """Table d'association entre employés et périodes"""
 
+    DAYS_OF_WEEK = [
+        (0, "Lundi"),
+        (1, "Mardi"),
+        (2, "Mercredi"),
+        (3, "Jeudi"),
+        (4, "Vendredi"),
+        (5, "Samedi"),
+        (6, "Dimanche"),
+    ]
+
     employee = models.ForeignKey(
         Employee, on_delete=models.CASCADE, verbose_name="Employé(e)"
     )
-    availability_range = models.ForeignKey(
-        AvailabilityRange, on_delete=models.CASCADE, verbose_name="Période"
-    )
+    start_date = models.DateField()
+    end_date = models.DateField()
+    day_of_week = models.IntegerField(choices=DAYS_OF_WEEK)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
 
     def __str__(self):
-        return f"Employee : {self.employee} - Availability Range : {self.availability_range}"
+        return f"{self.employee} - {self.get_day_of_week_display()} : {self.start_time} - {self.end_time} ({self.start_date} to {self.end_date})"
+
+
+class AvailabilityException(models.Model):
+    """Exceptions aux disponibilités des employés"""
+
+    employee = models.ForeignKey(
+        Employee, on_delete=models.CASCADE, verbose_name="Employé(e)"
+    )
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+    is_available = models.BooleanField(default=False)
+
+    def __str__(self):
+        status = "Disponible" if self.is_available else "Indisponible"
+        return f"{self.employee} - {self.start_date} to {self.end_date} : {status}"

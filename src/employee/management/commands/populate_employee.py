@@ -1,8 +1,8 @@
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-from datetime import date, timedelta
+from datetime import date, timedelta, time
 from person.models import Person
-from employee.models import Role, Employee, AvailabilityRange, AvailabilityEmployee
+from employee.models import Role, Employee, AvailabilityEmployee
 
 
 class Command(BaseCommand):
@@ -40,43 +40,114 @@ class Command(BaseCommand):
             role=role_receptionist,
         )
 
-        # Create Availability Ranges
-        now = timezone.now()
-        availability1 = AvailabilityRange.objects.create(
-            start_date=now + timedelta(days=1, hours=8),
-            end_date=now + timedelta(days=1, hours=12),
+        # Create Availability for employees
+        AvailabilityEmployee.objects.create(
+            employee=employee_vet1,
+            start_date=date(2025, 1, 1),
+            end_date=date(2025, 12, 31),
+            day_of_week=0,  # Monday
+            start_time=time(8, 0),
+            end_time=time(12, 0),
         )
-        availability2 = AvailabilityRange.objects.create(
-            start_date=now + timedelta(days=1, hours=14),
-            end_date=now + timedelta(days=1, hours=18),
+        AvailabilityEmployee.objects.create(
+            employee=employee_vet1,
+            start_date=date(2025, 1, 1),
+            end_date=date(2025, 12, 31),
+            day_of_week=0,
+            start_time=time(14, 0),
+            end_time=time(18, 0),
         )
-        availability3 = AvailabilityRange.objects.create(
-            start_date=now + timedelta(days=2, hours=8),
-            end_date=now + timedelta(days=2, hours=17),
+        AvailabilityEmployee.objects.create(
+            employee=employee_vet1,
+            start_date=date(2025, 1, 1),
+            end_date=date(2025, 12, 31),
+            day_of_week=1,
+            start_time=time(8, 0),
+            end_time=time(12, 0),
         )
-        availability4 = AvailabilityRange.objects.create(
-            start_date=now + timedelta(days=3, hours=9),
-            end_date=now + timedelta(days=3, hours=16),
+        AvailabilityEmployee.objects.create(
+            employee=employee_vet1,
+            start_date=date(2025, 1, 1),
+            end_date=date(2025, 12, 31),
+            day_of_week=1,
+            start_time=time(14, 0),
+            end_time=time(18, 0),
+        )
+        AvailabilityEmployee.objects.create(
+            employee=employee_vet1,
+            start_date=date(2025, 1, 1),
+            end_date=date(2025, 12, 31),
+            day_of_week=2,
+            start_time=time(8, 0),
+            end_time=time(12, 0),
+        )
+        AvailabilityEmployee.objects.create(
+            employee=employee_vet1,
+            start_date=date(2025, 1, 1),
+            end_date=date(2025, 12, 31),
+            day_of_week=2,
+            start_time=time(14, 0),
+            end_time=time(18, 0),
+        )
+        AvailabilityEmployee.objects.create(
+            employee=employee_vet1,
+            start_date=date(2025, 1, 1),
+            end_date=date(2025, 12, 31),
+            day_of_week=3,
+            start_time=time(8, 0),
+            end_time=time(12, 0),
+        )
+        AvailabilityEmployee.objects.create(
+            employee=employee_vet1,
+            start_date=date(2025, 1, 1),
+            end_date=date(2025, 12, 31),
+            day_of_week=3,
+            start_time=time(14, 0),
+            end_time=time(18, 0),
+        )
+        AvailabilityEmployee.objects.create(
+            employee=employee_vet1,
+            start_date=date(2025, 1, 1),
+            end_date=date(2025, 12, 31),
+            day_of_week=4,
+            start_time=time(8, 0),
+            end_time=time(12, 0),
+        )
+        AvailabilityEmployee.objects.create(
+            employee=employee_vet1,
+            start_date=date(2025, 1, 1),
+            end_date=date(2025, 12, 31),
+            day_of_week=4,
+            start_time=time(14, 0),
+            end_time=time(18, 0),
         )
 
-        # Link employees to availability
-        AvailabilityEmployee.objects.create(
-            employee=employee_vet1, availability_range=availability1
-        )
-        AvailabilityEmployee.objects.create(
-            employee=employee_vet1, availability_range=availability2
-        )
-        AvailabilityEmployee.objects.create(
-            employee=employee_vet2, availability_range=availability3
-        )
-        AvailabilityEmployee.objects.create(
-            employee=employee_receptionist, availability_range=availability4
-        )
+        # Employee 2:
+        for day in [0, 2, 4]:  # Monday, Wednesday, Friday
+            AvailabilityEmployee.objects.create(
+                employee=employee_vet2,
+                start_date=date(2025, 1, 1),
+                end_date=date(2025, 12, 31),
+                day_of_week=day,
+                start_time=time(9, 0),
+                end_time=time(17, 0),
+            )
+
+        # Receptionist: Lundi-Vendredi, 8h-17h
+        for day in range(5):
+            AvailabilityEmployee.objects.create(
+                employee=employee_receptionist,
+                start_date=date(2025, 1, 1),
+                end_date=date(2025, 12, 31),
+                day_of_week=day,
+                start_time=time(8, 0),
+                end_time=time(17, 0),
+            )
 
         self.stdout.write(
             self.style.SUCCESS(
                 f"Successfully created {Role.objects.count()} roles, "
                 f"{Employee.objects.count()} employees, and "
-                f"{AvailabilityRange.objects.count()} availability ranges"
+                f"{AvailabilityEmployee.objects.count()} availability schedules"
             )
         )
