@@ -53,11 +53,14 @@ def display_animal_note(request, animal_pk, note_pk):
                 return redirect('animal_note', animal_pk=animal.id, note_pk=new_note.id)
         else:
             form = SOAPNoteForm(request.POST, instance=animal_note)
-            if form.is_valid():
+            if form.is_valid() and 'edit-button' in request.POST:
                 form.save()
                 return redirect(
                     'animal_note', animal_pk=animal.id, note_pk=animal_note.id
                 )
+            elif form.is_valid() and 'delete-button' in request.POST:
+                animal_note.delete()
+                return redirect('animal_note', animal_pk=animal.id)
             new_form = SOAPNoteForm()
     else:
         form = SOAPNoteForm(instance=animal_note)
