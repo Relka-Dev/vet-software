@@ -8,3 +8,8 @@
 @plugin "flowbite/plugin";
 
 @source "../../node_modules/flowbite";
+
+:root {
+  --color-brand: #2563eb;
+  --color-primary: #2563eb;
+}

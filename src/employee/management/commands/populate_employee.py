@@ -1,8 +1,8 @@
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-from datetime import date, timedelta
+from datetime import date, timedelta, time
 from person.models import Person
-from employee.models import Role, Employee, AvailabilityRange, AvailabilityEmployee
+from employee.models import Role, Employee, AvailabilityEmployee
 
 
 class Command(BaseCommand):
@@ -40,43 +40,35 @@ class Command(BaseCommand):
             role=role_receptionist,
         )
 
-        # Create Availability Ranges
-        now = timezone.now()
-        availability1 = AvailabilityRange.objects.create(
-            start_date=now + timedelta(days=1, hours=8),
-            end_date=now + timedelta(days=1, hours=12),
-        )
-        availability2 = AvailabilityRange.objects.create(
-            start_date=now + timedelta(days=1, hours=14),
-            end_date=now + timedelta(days=1, hours=18),
-        )
-        availability3 = AvailabilityRange.objects.create(
-            start_date=now + timedelta(days=2, hours=8),
-            end_date=now + timedelta(days=2, hours=17),
-        )
-        availability4 = AvailabilityRange.objects.create(
-            start_date=now + timedelta(days=3, hours=9),
-            end_date=now + timedelta(days=3, hours=16),
-        )
+        # Create Availability for employees
+        availability_schedules = [
+            (
+                employee_vet1,
+                range(5),
+                [(8, 0, 12, 0), (14, 0, 18, 0)],
+                [(2025, 2025), (2026, 2026)],
+            ),
+            (employee_vet2, [0, 2, 4], [(9, 0, 17, 0)], [(2025, 2026)]),
+            (employee_receptionist, range(5), [(8, 0, 17, 0)], [(2025, 2026)]),
+        ]
 
-        # Link employees to availability
-        AvailabilityEmployee.objects.create(
-            employee=employee_vet1, availability_range=availability1
-        )
-        AvailabilityEmployee.objects.create(
-            employee=employee_vet1, availability_range=availability2
-        )
-        AvailabilityEmployee.objects.create(
-            employee=employee_vet2, availability_range=availability3
-        )
-        AvailabilityEmployee.objects.create(
-            employee=employee_receptionist, availability_range=availability4
-        )
+        for employee, days, slots, year_ranges in availability_schedules:
+            for year_start, year_end in year_ranges:
+                for day in days:
+                    for start_h, start_m, end_h, end_m in slots:
+                        AvailabilityEmployee.objects.create(
+                            employee=employee,
+                            start_date=date(year_start, 1, 1),
+                            end_date=date(year_end, 12, 31),
+                            day_of_week=day,
+                            start_time=time(start_h, start_m),
+                            end_time=time(end_h, end_m),
+                        )
 
         self.stdout.write(
             self.style.SUCCESS(
                 f"Successfully created {Role.objects.count()} roles, "
                 f"{Employee.objects.count()} employees, and "
-                f"{AvailabilityRange.objects.count()} availability ranges"
+                f"{AvailabilityEmployee.objects.count()} availability schedules"
             )
         )

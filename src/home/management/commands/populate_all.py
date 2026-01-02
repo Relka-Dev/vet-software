@@ -14,7 +14,7 @@ from appointment.models import (
 )
 from inventory.models import Inventory, Item, TreatmentType
 from animal.models import SOAPNote, Animal
-from employee.models import AvailabilityEmployee, AvailabilityRange, Employee, Role
+from employee.models import AvailabilityEmployee, Employee, OpenHours, Role
 from family.models import Extra_family_member, Family
 from person.models import Person
 
@@ -43,12 +43,12 @@ class Command(BaseCommand):
         SOAPNote.objects.all().delete()
         Animal.objects.all().delete()
         AvailabilityEmployee.objects.all().delete()
-        AvailabilityRange.objects.all().delete()
         Employee.objects.all().delete()
         Role.objects.all().delete()
         Extra_family_member.objects.all().delete()
         Family.objects.all().delete()
         Person.objects.all().delete()
+        OpenHours.objects.all().delete()
 
         self.stdout.write(self.style.SUCCESS("All existing data cleared"))
 
@@ -59,6 +59,7 @@ class Command(BaseCommand):
             'populate_animal',
             'populate_inventory',
             'populate_appointment',
+            'populate_open_hours',
         ]
 
         for command in commands:

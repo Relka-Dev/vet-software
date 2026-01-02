@@ -72,7 +72,9 @@ class Command(BaseCommand):
         equipment4 = Equipment.objects.create(name="Échographe")
 
         # Create Appointments - one or more per day for next month
-        now = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        now = timezone.now().replace(
+            year=2025, month=12, day=20, hour=0, minute=0, second=0, microsecond=0
+        )
         rooms = [room1, room2, room3]
         emergency_types = [emergency_routine, emergency_urgent, emergency_followup]
         procedures = [procedure1, procedure2, procedure3, procedure4]
