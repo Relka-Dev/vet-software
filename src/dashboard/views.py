@@ -3,7 +3,7 @@ from django.db.models import Count
 from django.utils import timezone
 from datetime import date, timedelta, datetime
 from appointment.models import Appointment
-from employee.models import OpenHours
+from employee.models import OpenHours, AvailabilityEmployee, Employee
 import json
 
 
@@ -100,6 +100,64 @@ def get_room_usage(year_start, year_end):
     return json.dumps(room_usage_percentage), round(global_room_usage, 2)
 
 
+def get_vet_utilization(year_start, year_end):
+    today = timezone.now().date()
+
+    veterinarians = Employee.objects.filter(role__name="Vétérinaire")
+    vet_usage_percentage = {}
+
+    # get hours per day of week for each vet
+    for vet in veterinarians:
+        hours_per_day_of_week = {}
+        for availability in AvailabilityEmployee.objects.filter(
+            employee=vet, start_date__lte=year_end, end_date__gte=year_start
+        ):
+            day_num = availability.day_of_week
+            if day_num not in hours_per_day_of_week:
+                hours_per_day_of_week[day_num] = 0
+
+            start_dt = datetime.combine(date.today(), availability.start_time)
+            end_dt = datetime.combine(date.today(), availability.end_time)
+            hours = (end_dt - start_dt).total_seconds() / 3600
+            hours_per_day_of_week[day_num] += hours
+
+        total_hours_available = 0
+        current_date = year_start
+        while current_date <= min(today, year_end):
+            day_of_week = current_date.weekday()
+            if day_of_week in hours_per_day_of_week:
+                total_hours_available += hours_per_day_of_week[day_of_week]
+            current_date += timedelta(days=1)
+
+        # Calculate hours worked from appointments
+        hours_worked = 0
+        for appointment in Appointment.objects.filter(
+            employee=vet,
+            start_date__date__gte=year_start,
+            start_date__date__lte=min(today, year_end),
+        ):
+            duration_hours = (
+                appointment.end_date - appointment.start_date
+            ).total_seconds() / 3600
+            hours_worked += duration_hours
+
+        vet_name = str(vet.person)
+        if total_hours_available > 0:
+            percentage = (hours_worked / total_hours_available) * 100
+            vet_usage_percentage[vet_name] = round(percentage, 2)
+        else:
+            vet_usage_percentage[vet_name] = 0
+
+    # Calculate global vet utilization
+    global_vet_usage = 0
+    if len(vet_usage_percentage) > 0:
+        global_vet_usage = sum(vet_usage_percentage.values()) / len(
+            vet_usage_percentage
+        )
+
+    return json.dumps(vet_usage_percentage), round(global_vet_usage, 2)
+
+
 def dashboard_view(request, year=None):
     today = timezone.now().date()
     months = [
@@ -133,7 +191,10 @@ def dashboard_view(request, year=None):
     appointments_data, total_appointments = get_appointments_data(
         year_start, year_end, months
     )
+
     room_usage_percentage, global_room_usage = get_room_usage(year_start, year_end)
+
+    vet_usage_percentage, global_vet_usage = get_vet_utilization(year_start, year_end)
 
     context = {
         'appointments_data': appointments_data,
@@ -141,6 +202,8 @@ def dashboard_view(request, year=None):
         'current_year': selected_year,
         'room_usage_percentage': room_usage_percentage,
         'global_room_usage': global_room_usage,
+        'vet_usage_percentage': vet_usage_percentage,
+        'global_vet_usage': global_vet_usage,
     }
 
     return render(request, 'dashboard/dashboard.html', context)

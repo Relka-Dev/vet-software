@@ -72,7 +72,7 @@ class OpenHours(models.Model):
 
 
 class OpenException(models.Model):
-    """Exceptions aux heures d'ouverture du cabinet vétérinaire"""
+    """Exceptions aux heures d'ouverture du cabinet vétérinaire (pas implémenté)"""
 
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
@@ -114,7 +114,7 @@ class AvailabilityEmployee(models.Model):
 
 
 class AvailabilityException(models.Model):
-    """Exceptions aux disponibilités des employés"""
+    """Exceptions aux disponibilités des employés (pas implémenté)"""
 
     employee = models.ForeignKey(
         Employee, on_delete=models.CASCADE, verbose_name="Employé(e)"

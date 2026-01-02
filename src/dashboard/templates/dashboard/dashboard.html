@@ -18,6 +18,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {% include "dashboard/includes/appointments_card.html" %}
             {% include "dashboard/includes/room_utilization.html" %}
+            {% include "dashboard/includes/vet_utilization.html" %}
         </div>
     </div>
     <!-- Main Dashboard Script -->
@@ -29,6 +30,7 @@
         window.addEventListener('load', function() {
             initAppointmentsChart();
             initRoomChart();
+            initVetChart();
         });
     </script>
 {% endblock content %}
