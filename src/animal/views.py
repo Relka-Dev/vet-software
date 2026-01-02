@@ -60,7 +60,7 @@ def display_animal_note(request, animal_pk, note_pk):
                 )
             elif form.is_valid() and 'delete-button' in request.POST:
                 animal_note.delete()
-                return redirect('animal_note', animal_pk=animal.id)
+                return redirect('animal_note_by_animal', animal_pk=animal.id)
             new_form = SOAPNoteForm()
     else:
         form = SOAPNoteForm(instance=animal_note)

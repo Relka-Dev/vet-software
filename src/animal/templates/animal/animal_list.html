@@ -94,7 +94,9 @@
                               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5">
                         {% for family in families %}
                           <option value="{{ family.id }}"
-                                  {% if family.id == animal.family.id %}selected{% endif %}>{{ family.name }}</option>
+                                  {% if family.id == animal.family.id %}selected{% endif %}>
+                            {{ family.main_contact.last_name }}, {{ family.main_contact.first_name }}
+                          </option>
                         {% endfor %}
                       </select>
                     </div>
