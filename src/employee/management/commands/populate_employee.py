@@ -41,108 +41,29 @@ class Command(BaseCommand):
         )
 
         # Create Availability for employees
-        AvailabilityEmployee.objects.create(
-            employee=employee_vet1,
-            start_date=date(2025, 1, 1),
-            end_date=date(2025, 12, 31),
-            day_of_week=0,  # Monday
-            start_time=time(8, 0),
-            end_time=time(12, 0),
-        )
-        AvailabilityEmployee.objects.create(
-            employee=employee_vet1,
-            start_date=date(2025, 1, 1),
-            end_date=date(2025, 12, 31),
-            day_of_week=0,
-            start_time=time(14, 0),
-            end_time=time(18, 0),
-        )
-        AvailabilityEmployee.objects.create(
-            employee=employee_vet1,
-            start_date=date(2025, 1, 1),
-            end_date=date(2025, 12, 31),
-            day_of_week=1,
-            start_time=time(8, 0),
-            end_time=time(12, 0),
-        )
-        AvailabilityEmployee.objects.create(
-            employee=employee_vet1,
-            start_date=date(2025, 1, 1),
-            end_date=date(2025, 12, 31),
-            day_of_week=1,
-            start_time=time(14, 0),
-            end_time=time(18, 0),
-        )
-        AvailabilityEmployee.objects.create(
-            employee=employee_vet1,
-            start_date=date(2025, 1, 1),
-            end_date=date(2025, 12, 31),
-            day_of_week=2,
-            start_time=time(8, 0),
-            end_time=time(12, 0),
-        )
-        AvailabilityEmployee.objects.create(
-            employee=employee_vet1,
-            start_date=date(2025, 1, 1),
-            end_date=date(2025, 12, 31),
-            day_of_week=2,
-            start_time=time(14, 0),
-            end_time=time(18, 0),
-        )
-        AvailabilityEmployee.objects.create(
-            employee=employee_vet1,
-            start_date=date(2025, 1, 1),
-            end_date=date(2025, 12, 31),
-            day_of_week=3,
-            start_time=time(8, 0),
-            end_time=time(12, 0),
-        )
-        AvailabilityEmployee.objects.create(
-            employee=employee_vet1,
-            start_date=date(2025, 1, 1),
-            end_date=date(2025, 12, 31),
-            day_of_week=3,
-            start_time=time(14, 0),
-            end_time=time(18, 0),
-        )
-        AvailabilityEmployee.objects.create(
-            employee=employee_vet1,
-            start_date=date(2025, 1, 1),
-            end_date=date(2025, 12, 31),
-            day_of_week=4,
-            start_time=time(8, 0),
-            end_time=time(12, 0),
-        )
-        AvailabilityEmployee.objects.create(
-            employee=employee_vet1,
-            start_date=date(2025, 1, 1),
-            end_date=date(2025, 12, 31),
-            day_of_week=4,
-            start_time=time(14, 0),
-            end_time=time(18, 0),
-        )
+        availability_schedules = [
+            (
+                employee_vet1,
+                range(5),
+                [(8, 0, 12, 0), (14, 0, 18, 0)],
+                [(2025, 2025), (2026, 2026)],
+            ),
+            (employee_vet2, [0, 2, 4], [(9, 0, 17, 0)], [(2025, 2026)]),
+            (employee_receptionist, range(5), [(8, 0, 17, 0)], [(2025, 2026)]),
+        ]
 
-        # Employee 2:
-        for day in [0, 2, 4]:  # Monday, Wednesday, Friday
-            AvailabilityEmployee.objects.create(
-                employee=employee_vet2,
-                start_date=date(2025, 1, 1),
-                end_date=date(2025, 12, 31),
-                day_of_week=day,
-                start_time=time(9, 0),
-                end_time=time(17, 0),
-            )
-
-        # Receptionist: Lundi-Vendredi, 8h-17h
-        for day in range(5):
-            AvailabilityEmployee.objects.create(
-                employee=employee_receptionist,
-                start_date=date(2025, 1, 1),
-                end_date=date(2025, 12, 31),
-                day_of_week=day,
-                start_time=time(8, 0),
-                end_time=time(17, 0),
-            )
+        for employee, days, slots, year_ranges in availability_schedules:
+            for year_start, year_end in year_ranges:
+                for day in days:
+                    for start_h, start_m, end_h, end_m in slots:
+                        AvailabilityEmployee.objects.create(
+                            employee=employee,
+                            start_date=date(year_start, 1, 1),
+                            end_date=date(year_end, 12, 31),
+                            day_of_week=day,
+                            start_time=time(start_h, start_m),
+                            end_time=time(end_h, end_m),
+                        )
 
         self.stdout.write(
             self.style.SUCCESS(

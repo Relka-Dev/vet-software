@@ -13,16 +13,30 @@ class Command(BaseCommand):
         for day in range(5):
             # morning
             OpenHours.objects.create(
-                start_date=date(2025, 1, 1),
+                start_date=date(2025, 12, 1),
                 end_date=date(2025, 12, 31),
+                day_of_week=day,
+                start_time=time(8, 0),
+                end_time=time(12, 0),
+            )
+            OpenHours.objects.create(
+                start_date=date(2026, 1, 1),
+                end_date=date(2026, 12, 31),
                 day_of_week=day,
                 start_time=time(8, 0),
                 end_time=time(12, 0),
             )
             # afternoon
             OpenHours.objects.create(
-                start_date=date(2025, 1, 1),
+                start_date=date(2025, 12, 1),
                 end_date=date(2025, 12, 31),
+                day_of_week=day,
+                start_time=time(14, 0),
+                end_time=time(18, 0),
+            )
+            OpenHours.objects.create(
+                start_date=date(2026, 1, 1),
+                end_date=date(2026, 12, 31),
                 day_of_week=day,
                 start_time=time(14, 0),
                 end_time=time(18, 0),
