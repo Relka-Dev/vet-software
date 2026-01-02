@@ -1,0 +1,41 @@
+{% extends "appointment/base.html" %}
+{% block title %}
+    Détails du rendez-vous
+{% endblock title %}
+{% block calendar_content %}
+    <div>
+        <h1 class="text-2xl font-bold mb-4">Détails du rendez-vous</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="flex justify-between p-6 text-3xl font-bold text-gray-800 mb-2">
+                <div class="grid gap-4 mb-6">
+                    <h2 class="text-xl font-semibold">Informations générales</h2>
+                    {{ form.as_p }}
+                </div>
+                <div class="grid gap-4 mb-6">
+                    <h2 class="text-xl font-semibold">Articles</h2>
+                    {{ item_formset.management_form }}
+                    <div id="item-formset">
+                        {% for item_form in item_formset %}<div class="item-form border-b pb-4 mb-4">{{ item_form.as_p }}</div>{% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4 mt-4">
+                <button type="submit"
+                        name="edit-button"
+                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                    Enregister
+                </button>
+                <button type="submit"
+                        name="delete-button"
+                        class="text-red-600 inline-flex items-center hover:text-white border border-red-600 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                    <svg class="mr-1 -ml-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd">
+                        </path>
+                    </svg>
+                    Supprimer
+                </button>
+            </div>
+        </form>
+    </div>
+{% endblock calendar_content %}

@@ -1,9 +1,17 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from datetime import datetime, timedelta
-from appointment.models import Appointment, Room, EmergencyType
+from appointment.models import (
+    Appointment,
+    Room,
+    EmergencyType,
+    AppointmentItem,
+    AppointmentProcedure,
+    AppointmentEquipment,
+)
 from animal.models import Animal
 from employee.models import Employee
+from .forms import AppointmentForm, ItemFormset
 
 
 def calendar_view(request, year=None, month=None, day=None):
@@ -59,9 +67,11 @@ def add_appointment(request):
             animal=Animal.objects.get(id=request.POST.get('animal')),
             room=Room.objects.get(id=request.POST.get('room')),
             employee=Employee.objects.get(id=request.POST.get('employee')),
-            emergency_type=EmergencyType.objects.get(id=request.POST.get('emergency_type')),
+            emergency_type=EmergencyType.objects.get(
+                id=request.POST.get('emergency_type')
+            ),
             start_date=request.POST.get('start_date'),
-            end_date=request.POST.get('end_date')
+            end_date=request.POST.get('end_date'),
         )
     return redirect('calendar')
 
@@ -73,7 +83,9 @@ def update_appointment(request, pk):
         appointment.animal = Animal.objects.get(id=request.POST.get('animal'))
         appointment.room = Room.objects.get(id=request.POST.get('room'))
         appointment.employee = Employee.objects.get(id=request.POST.get('employee'))
-        appointment.emergency_type = EmergencyType.objects.get(id=request.POST.get('emergency_type'))
+        appointment.emergency_type = EmergencyType.objects.get(
+            id=request.POST.get('emergency_type')
+        )
         appointment.start_date = request.POST.get('start_date')
         appointment.end_date = request.POST.get('end_date')
         appointment.save()
@@ -82,3 +94,34 @@ def update_appointment(request, pk):
         appointment.delete()
 
     return redirect('calendar')
+
+
+def appointment_details(request, pk):
+    appointment = get_object_or_404(Appointment, id=pk)
+    appointment_items = AppointmentItem.objects.filter(appointment=appointment)
+    appointment_procedure = AppointmentProcedure.objects.filter(appointment=appointment)
+    appointment_equipment = AppointmentEquipment.objects.filter(appointment=appointment)
+
+    if request.method == 'POST':
+        form = AppointmentForm(request.POST, instance=appointment)
+        item_form = ItemFormset(request.POST, instance=appointment)
+        if form.is_valid() and item_form.is_valid():
+            form.save()
+            item_form.save()
+            return redirect('appointment_details', pk=appointment.pk)
+    else:
+        form = AppointmentForm(instance=appointment)
+        item_form = ItemFormset(instance=appointment)
+
+    return render(
+        request,
+        'appointment/appointment_view.html',
+        {
+            'appointment': appointment,
+            'appointment_items': appointment_items,
+            'appointment_procedure': appointment_procedure,
+            'appointment_equipment': appointment_equipment,
+            'form': form,
+            'item_formset': item_form,
+        },
+    )
