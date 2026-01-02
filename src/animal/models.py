@@ -30,7 +30,9 @@ class SOAPNote(models.Model):
 
     content = models.TextField(max_length=500, verbose_name="Contenu de la SOAP note")
 
-    created_at = models.DateTimeField(verbose_name="Date de création")
+    created_at = models.DateTimeField(
+        auto_now_add=True, verbose_name="Date de création"
+    )
 
     animal = models.ForeignKey(
         Animal,
