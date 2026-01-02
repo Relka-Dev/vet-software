@@ -16,70 +16,19 @@
             </div>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div class="max-w-sm w-full bg-white rounded-lg shadow-sm p-4 md:p-6">
-                <div class="flex justify-between items-start mb-4">
-                    <div>
-                        <h5 class="leading-none text-3xl font-bold text-gray-900 pb-2">{{ total_appointments }}</h5>
-                        <p class="text-base font-normal text-gray-500"># Consultations en {{ current_year }}</p>
-                    </div>
-                </div>
-                <div id="appointments-chart"></div>
-            </div>
+            {% include "dashboard/includes/appointments_card.html" %}
+            {% include "dashboard/includes/room_utilization.html" %}
         </div>
     </div>
+    <!-- Main Dashboard Script -->
     <script>
-        let selectedYear = {{ current_year }};
-        const appointmentsData = {{ appointments_data|safe }};
-        let chart = null;
-
-        function initChart() {
-            const options = {
-                series: [{
-                    name: 'Appointments',
-                    data: appointmentsData.counts
-                }],
-                chart: {
-                    type: 'bar',
-                    height: 350,
-                    sparkline: {
-                        enabled: false
-                    }
-                },
-                plotOptions: {
-                    bar: {
-                        horizontal: false,
-                        columnWidth: '55%',
-                        borderRadius: 4
-                    }
-                },
-                fill: {
-                    colors: ['#3b82f6']
-                },
-                xaxis: {
-                    categories: appointmentsData.dates
-                },
-                yaxis: {
-                    title: {
-                        text: 'Nombre de consultations'
-                    }
-                },
-                colors: ['#3b82f6']
-            };
-
-            if (chart) {
-                chart.destroy();
-            }
-
-            chart = new ApexCharts(document.querySelector("#appointments-chart"), options);
-            chart.render();
-        }
-
         function changeYear(year) {
             window.location.href = '/dashboard/' + year + '/';
         }
 
         window.addEventListener('load', function() {
-            initChart();
+            initAppointmentsChart();
+            initRoomChart();
         });
     </script>
 {% endblock content %}
