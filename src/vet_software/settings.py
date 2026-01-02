@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'employee',
     'family',
     'compressor',
+    'dashboard',
 ]
 
 
