@@ -1,3 +1,4 @@
+from pyexpat.errors import messages
 from click import edit
 from django.shortcuts import redirect, render
 
@@ -54,6 +55,15 @@ def display_animal_note(request, animal_pk, note_pk):
         else:
             form = SOAPNoteForm(request.POST, instance=animal_note)
             if form.is_valid() and 'edit-button' in request.POST:
+                if animal_note.validated_by:
+                    messages.error(
+                        request,
+                        "Ce rendez-vous est déjà validé et ne peut plus être modifié.",
+                    )
+                    return redirect(
+                        'animal_note', animal_pk=animal.id, note_pk=animal_note.id
+                    )
+
                 form.save()
                 return redirect(
                     'animal_note', animal_pk=animal.id, note_pk=animal_note.id

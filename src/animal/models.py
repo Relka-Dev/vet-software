@@ -59,6 +59,8 @@ class SOAPNote(models.Model):
         on_delete=models.PROTECT,
         related_name="validated_notes",
         verbose_name="Validé par",
+        blank=True,
+        null=True,
     )
 
     class Meta:
