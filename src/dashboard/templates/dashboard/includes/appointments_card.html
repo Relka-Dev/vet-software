@@ -1,0 +1,55 @@
+<div class="max-w-sm w-full bg-white rounded-lg shadow-sm p-4 md:p-6">
+    <div class="flex justify-between items-start mb-4">
+        <div class="flex items-end space-x-2">
+            <span class="leading-none text-3xl font-bold text-gray-900">{{ total_appointments }}</span>
+            <h5 class="text-base font-normal text-gray-500">Nombre de consultations en {{ current_year }}</h5>
+        </div>
+    </div>
+    <div id="appointments-chart"></div>
+</div>
+<script>
+    const appointmentsData = {{ appointments_data|safe }};
+    let appointmentsChart = null;
+
+    function initAppointmentsChart() {
+        const options = {
+            series: [{
+                name: 'Rendez-vous',
+                data: appointmentsData.counts
+            }],
+            chart: {
+                type: 'bar',
+                height: 350,
+                sparkline: {
+                    enabled: false
+                }
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: '55%',
+                    borderRadius: 4
+                }
+            },
+            fill: {
+                colors: ['#2563eb']
+            },
+            xaxis: {
+                categories: appointmentsData.dates
+            },
+            yaxis: {
+                title: {
+                    text: '# consultations'
+                }
+            },
+            colors: ['#2563eb']
+        };
+
+        if (appointmentsChart) {
+            appointmentsChart.destroy();
+        }
+
+        appointmentsChart = new ApexCharts(document.querySelector("#appointments-chart"), options);
+        appointmentsChart.render();
+    }
+</script>
