@@ -44,6 +44,9 @@
                 {% for room in rooms %}<option value="{{ room.id }}">{{ room.room_type.name }}</option>{% endfor %}
               </select>
             </div>
+
+            <!-- Champ employé : visible seulement pour réception, caché sinon -->
+            {% if is_reception %}
             <div class="col-span-2">
               <label for="employee" class="block mb-2 text-sm font-medium text-gray-900">Employé</label>
               <select name="employee" id="employee" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5" required>
@@ -51,6 +54,17 @@
                 {% for emp in employees %}<option value="{{ emp.id }}">{{ emp.person.get_full_name }} - {{ emp.role.name }}</option>{% endfor %}
               </select>
             </div>
+            {% else %}
+            <!-- Pour non-réception : champ caché avec l'employé connecté -->
+            <input type="hidden" name="employee" value="{{ current_employee.id }}">
+            <div class="col-span-2">
+              <label class="block mb-2 text-sm font-medium text-gray-900">Employé</label>
+              <div class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5">
+                {{ current_employee.person.get_full_name }} - {{ current_employee.role.name }}
+              </div>
+            </div>
+            {% endif %}
+
             <div class="col-span-2">
               <label for="emergency_type" class="block mb-2 text-sm font-medium text-gray-900">Type de consultation</label>
               <select name="emergency_type" id="emergency_type" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5" required>
