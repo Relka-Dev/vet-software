@@ -20,6 +20,16 @@ def calendar_view(request, year=None, month=None, day=None):
         start_date__lt=next_day, end_date__gte=selected_date
     ).select_related('animal', 'employee', 'room', 'emergency_type')
 
+    try:
+        current_employee = Employee.objects.get(person=request.user)
+
+        # Filtrer les rendez-vous si l'employé n'est pas de la 'réception'
+        if current_employee.role.name.lower() != 'réception':
+            appointments = appointments.filter(employee=current_employee)
+    except Employee.DoesNotExist:
+        # Si l'utilisateur n'est pas un employé, on ne filtre pas (DEBUG) à patch pour la release
+        pass
+
     appointments_with_duration = []
     for appt in appointments:
         duration_minutes = (appt.end_date - appt.start_date).total_seconds() / 60
@@ -59,9 +69,11 @@ def add_appointment(request):
             animal=Animal.objects.get(id=request.POST.get('animal')),
             room=Room.objects.get(id=request.POST.get('room')),
             employee=Employee.objects.get(id=request.POST.get('employee')),
-            emergency_type=EmergencyType.objects.get(id=request.POST.get('emergency_type')),
+            emergency_type=EmergencyType.objects.get(
+                id=request.POST.get('emergency_type')
+            ),
             start_date=request.POST.get('start_date'),
-            end_date=request.POST.get('end_date')
+            end_date=request.POST.get('end_date'),
         )
     return redirect('calendar')
 
@@ -73,7 +85,9 @@ def update_appointment(request, pk):
         appointment.animal = Animal.objects.get(id=request.POST.get('animal'))
         appointment.room = Room.objects.get(id=request.POST.get('room'))
         appointment.employee = Employee.objects.get(id=request.POST.get('employee'))
-        appointment.emergency_type = EmergencyType.objects.get(id=request.POST.get('emergency_type'))
+        appointment.emergency_type = EmergencyType.objects.get(
+            id=request.POST.get('emergency_type')
+        )
         appointment.start_date = request.POST.get('start_date')
         appointment.end_date = request.POST.get('end_date')
         appointment.save()
