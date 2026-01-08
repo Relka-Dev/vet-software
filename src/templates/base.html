@@ -41,7 +41,7 @@
             {{ user.get_full_name }}
             {% if user.employee.exists %}
               <br>
-              <span class="text-xs text-gray-400">{{ user.employee.first.role }}</span>
+              <span class="py-1.5 text-gray-400">{{ user.employee.first.role }}</span>
             {% endif %}
           </a>
         {% else %}
