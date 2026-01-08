@@ -24,7 +24,7 @@ def calendar_view(request, year=None, month=None, day=None):
         current_employee = Employee.objects.get(person=request.user)
 
         # Filtrer les rendez-vous si l'employé n'est pas de la 'réception'
-        if current_employee.role.name.lower() != 'réception':
+        if current_employee.role.name.lower() != 'réceptionniste':
             appointments = appointments.filter(employee=current_employee)
     except Employee.DoesNotExist:
         # Si l'utilisateur n'est pas un employé, on ne filtre pas (DEBUG) à patch pour la release
