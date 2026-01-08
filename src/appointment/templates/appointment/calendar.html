@@ -41,7 +41,11 @@
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
                         required>
                   <option value="">Sélectionner un animal</option>
-                  {% for animal in animals %}<option value="{{ animal.id }}">{{ animal.name }}</option>{% endfor %}
+                  {% for animal in animals %}
+                    <option value="{{ animal.id }}">
+                      {{ animal.name }} {{ animal.family.main_contact.last_name }} ({{ animal.species.name }})
+                    </option>
+                  {% endfor %}
                 </select>
               </div>
               <div class="col-span-2">
@@ -156,7 +160,9 @@
                 <div class="bg-blue-600 text-white rounded p-2 text-sm mb-2 cursor-pointer hover:bg-blue-700"
                      style="min-height: {{ item.height_px }}px"
                      onclick="toggleModal('edit-appointment-{{ item.appointment.id }}')">
-                  <div class="font-semibold">{{ item.appointment.emergency_type.name }} - {{ item.appointment.animal.name }}</div>
+                  <div class="font-semibold">
+                    {{ item.appointment.emergency_type.name }} - {{ item.appointment.animal.name }} {{ item.appointment.animal.family.main_contact.last_name }} ({{ item.appointment.animal.species.name }})
+                  </div>
                   <div class="text-xs opacity-90">
                     {{ item.appointment.start_date|date:"H:i" }} - {{ item.appointment.end_date|date:"H:i" }}
                     • {{ item.appointment.employee.person.first_name }} {{ item.appointment.employee.person.last_name }}
