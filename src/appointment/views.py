@@ -16,9 +16,28 @@ def calendar_view(request, year=None, month=None, day=None):
     next_day = selected_date + timedelta(days=1)
     prev_day = selected_date - timedelta(days=1)
 
+    # Récupérer l'employé connecté et son rôle
+    current_employee = None
+    user_role = None
+    is_reception = False
+
+    try:
+        current_employee = Employee.objects.select_related('role', 'person').get(
+            person=request.user
+        )
+        user_role = current_employee.role.name
+        is_reception = user_role == 'Réceptionniste'
+    except Employee.DoesNotExist:
+        pass
+
+    # Filtrage des rendez-vous
     appointments = Appointment.objects.filter(
         start_date__lt=next_day, end_date__gte=selected_date
     ).select_related('animal', 'employee', 'room', 'emergency_type')
+
+    # Si pas réception, filtrer par employé
+    if current_employee and not is_reception:
+        appointments = appointments.filter(employee=current_employee)
 
     appointments_with_duration = []
     for appt in appointments:
@@ -32,10 +51,20 @@ def calendar_view(request, year=None, month=None, day=None):
         )
 
     hours = range(8, 24)
-
     animals = Animal.objects.all()
     rooms = Room.objects.select_related('room_type').all()
-    employees = Employee.objects.select_related('person', 'role').all()
+
+    if is_reception:
+        employees = Employee.objects.select_related('person', 'role').all()
+    else:
+        employees = (
+            Employee.objects.select_related('person', 'role').filter(
+                id=current_employee.id
+            )
+            if current_employee
+            else []
+        )
+
     emergency_types = EmergencyType.objects.all()
 
     context = {
@@ -48,6 +77,8 @@ def calendar_view(request, year=None, month=None, day=None):
         'rooms': rooms,
         'employees': employees,
         'emergency_types': emergency_types,
+        'is_reception': is_reception,
+        'current_employee': current_employee,
     }
 
     return render(request, 'appointment/calendar.html', context)
@@ -55,25 +86,57 @@ def calendar_view(request, year=None, month=None, day=None):
 
 def add_appointment(request):
     if request.method == 'POST':
-        Appointment.objects.create(
-            animal=Animal.objects.get(id=request.POST.get('animal')),
-            room=Room.objects.get(id=request.POST.get('room')),
-            employee=Employee.objects.get(id=request.POST.get('employee')),
-            emergency_type=EmergencyType.objects.get(id=request.POST.get('emergency_type')),
-            start_date=request.POST.get('start_date'),
-            end_date=request.POST.get('end_date')
-        )
+        try:
+            current_employee = Employee.objects.select_related('role').get(
+                person=request.user
+            )
+            is_reception = current_employee.role.name == 'Réceptionniste'
+
+            if is_reception:
+                employee_id = request.POST.get('employee')
+            else:
+                employee_id = current_employee.id
+
+            Appointment.objects.create(
+                animal=Animal.objects.get(id=request.POST.get('animal')),
+                room=Room.objects.get(id=request.POST.get('room')),
+                employee=Employee.objects.get(id=employee_id),
+                emergency_type=EmergencyType.objects.get(
+                    id=request.POST.get('emergency_type')
+                ),
+                start_date=request.POST.get('start_date'),
+                end_date=request.POST.get('end_date'),
+            )
+        except Employee.DoesNotExist:
+            pass
+
     return redirect('calendar')
 
 
 def update_appointment(request, pk):
     appointment = get_object_or_404(Appointment, id=pk)
 
+    try:
+        current_employee = Employee.objects.select_related('role').get(
+            person=request.user
+        )
+        is_reception = current_employee.role.name == 'Réceptionniste'
+
+        if not is_reception and appointment.employee != current_employee:
+            return redirect('calendar')
+    except Employee.DoesNotExist:
+        return redirect('calendar')
+
     if request.method == 'POST' and 'edit-button' in request.POST:
         appointment.animal = Animal.objects.get(id=request.POST.get('animal'))
         appointment.room = Room.objects.get(id=request.POST.get('room'))
-        appointment.employee = Employee.objects.get(id=request.POST.get('employee'))
-        appointment.emergency_type = EmergencyType.objects.get(id=request.POST.get('emergency_type'))
+
+        if is_reception:
+            appointment.employee = Employee.objects.get(id=request.POST.get('employee'))
+
+        appointment.emergency_type = EmergencyType.objects.get(
+            id=request.POST.get('emergency_type')
+        )
         appointment.start_date = request.POST.get('start_date')
         appointment.end_date = request.POST.get('end_date')
         appointment.save()
