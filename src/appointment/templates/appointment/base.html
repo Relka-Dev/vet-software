@@ -13,7 +13,7 @@
         <div class="flex justify-between bg-white rounded-lg shadow-md p-6 text-3xl font-bold text-gray-800 mb-2">
             <h2>
                 {% if appointment %}
-                    Rendez-vous du {{ appointment.start_date|date:"d/m/Y H:i" }}
+                    Rendez-vous du {{ appointment.start_date|date:"d/m/Y" }}
                     <span class="text-base font-normal text-gray-500 ml-2">pour {{ appointment.animal.name }}</span>
                 {% else %}
                     Calendrier des rendez-vous

@@ -5,10 +5,8 @@ from inventory.models import Item, Inventory
 
 
 @receiver(pre_save, sender=AppointmentItem)
+# Stocke l'ancienne quantité avant la sauvegarde
 def store_old_quantity(sender, instance, **kwargs):
-    """
-    Stocke l'ancienne quantité avant la sauvegarde
-    """
     if instance.pk:  # Si l'objet existe déjà
         try:
             old_instance = AppointmentItem.objects.get(pk=instance.pk)
@@ -20,10 +18,8 @@ def store_old_quantity(sender, instance, **kwargs):
 
 
 @receiver(post_save, sender=AppointmentItem)
+# Décrémente l'inventaire quand un item est ajouté ou modifié
 def update_inventory_on_save(sender, instance, created, **kwargs):
-    """
-    Décrémente l'inventaire quand un item est ajouté ou modifié
-    """
     item = instance.item
     inventory_item = Inventory.objects.get(item=item)
 
@@ -45,13 +41,11 @@ def update_inventory_on_save(sender, instance, created, **kwargs):
         )
 
 
-# not sure if needed
+""" # not sure if needed
 @receiver(post_delete, sender=AppointmentItem)
 def restore_inventory_on_delete(sender, instance, **kwargs):
-    """
-    Restaure l'inventaire quand un item est supprimé
-    """
     item = instance.item
     inventory_item = Inventory.objects.get(item=item)
     inventory_item.quantity += instance.quantity
     inventory_item.save()
+"""

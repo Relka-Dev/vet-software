@@ -1,17 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from datetime import datetime, timedelta
-from appointment.models import (
-    Appointment,
-    Room,
-    EmergencyType,
-    AppointmentItem,
-    AppointmentProcedure,
-    AppointmentEquipment,
-)
+from appointment.models import Appointment, Room, EmergencyType
 from animal.models import Animal
 from employee.models import Employee
-from .forms import AppointmentForm, ItemFormset
+from .forms import AppointmentForm, ItemFormset, ProcedureFormset, EquipmentFormset
 
 
 def calendar_view(request, year=None, month=None, day=None):
@@ -96,32 +89,38 @@ def update_appointment(request, pk):
     return redirect('calendar')
 
 
+# See all details about items, procedures and equipment used
 def appointment_details(request, pk):
     appointment = get_object_or_404(Appointment, id=pk)
-    appointment_items = AppointmentItem.objects.filter(appointment=appointment)
-    appointment_procedure = AppointmentProcedure.objects.filter(appointment=appointment)
-    appointment_equipment = AppointmentEquipment.objects.filter(appointment=appointment)
 
     if request.method == 'POST':
-        form = AppointmentForm(request.POST, instance=appointment)
         item_form = ItemFormset(request.POST, instance=appointment)
-        if form.is_valid() and item_form.is_valid():
-            form.save()
+        procedure_form = ProcedureFormset(request.POST, instance=appointment)
+        equipment_form = EquipmentFormset(request.POST, instance=appointment)
+        if (
+            form.is_valid()
+            and item_form.is_valid()
+            and procedure_form.is_valid()
+            and equipment_form.is_valid()
+        ):
             item_form.save()
+            procedure_form.save()
+            equipment_form.save()
             return redirect('appointment_details', pk=appointment.pk)
     else:
         form = AppointmentForm(instance=appointment)
         item_form = ItemFormset(instance=appointment)
+        procedure_form = ProcedureFormset(instance=appointment)
+        equipment_form = EquipmentFormset(instance=appointment)
 
     return render(
         request,
         'appointment/appointment_view.html',
         {
             'appointment': appointment,
-            'appointment_items': appointment_items,
-            'appointment_procedure': appointment_procedure,
-            'appointment_equipment': appointment_equipment,
             'form': form,
             'item_formset': item_form,
+            'procedure_formset': procedure_form,
+            'equipment_formset': equipment_form,
         },
     )

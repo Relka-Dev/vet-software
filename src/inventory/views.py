@@ -2,6 +2,7 @@ from django.shortcuts import redirect, render
 from .models import Inventory, Item, TreatmentType
 
 
+# function used to render database instances
 def inventory_list(request):
     inventory = Inventory.objects.all()
     all_types = TreatmentType.objects.all()
@@ -20,12 +21,14 @@ def add_item(request):
         price = request.POST.get('price')
         treatment_type_id = request.POST.get('treatment_type')
         treatment_type = TreatmentType.objects.get(id=treatment_type_id)
+        # create the item first
         Item.objects.create(
             name=name, reminder=reminder, price=price, treatment_type=treatment_type
         )
 
         quantity = request.POST.get('quantity')
         expiration_date = request.POST.get('expiration_date')
+        # create an "inventory" object with the item create before and its quantity
         Inventory.objects.create(
             item=Item.objects.last(), quantity=quantity, expiration_date=expiration_date
         )
@@ -34,8 +37,10 @@ def add_item(request):
 
 
 def update_item(request, pk):
+    # make sure it's the right item
     item = Item.objects.get(id=pk)
 
+    # save the new informations with the edit button
     if request.method == 'POST' and 'edit-button' in request.POST:
         item.name = request.POST.get('name')
         item.reminder = request.POST.get('reminder')
@@ -46,6 +51,7 @@ def update_item(request, pk):
 
         return redirect('inventory_list')
 
+    # otherwise delete the item with the delete button
     if request.method == 'POST' and 'delete-button' in request.POST:
         item.delete()
         return redirect('inventory_list')
