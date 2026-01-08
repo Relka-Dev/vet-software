@@ -24,10 +24,6 @@ class Person(models.Model):
     def username(self):
         return self.get_full_name()
 
-    @property
-    def last_login(self):
-        return self.last_login()
-
     def get_full_name(self):
         return f"{self.first_name} {self.last_name}"
 
