@@ -4,6 +4,7 @@ from datetime import date, timedelta
 from family.models import Family
 from animal.models import Animal, SOAPNote
 from employee.models import Employee
+from animal.models import Species
 
 
 class Command(BaseCommand):
@@ -28,30 +29,41 @@ class Command(BaseCommand):
             )
             return
 
-        # Animal data
+        # Species
+        species_names = ["Chien", "Chat", "Lapin", "Oiseau", "Reptile"]
+        species_objs = {}
+        for name in species_names:
+            obj, _ = Species.objects.get_or_create(name=name)
+            species_objs[name] = obj
+
+        # Animal
         animal1 = Animal.objects.create(
             name="Max",
             birthday=date(2018, 3, 10),
             federal_identification="CH-123-456-789",
             family=families[0],
+            species=species_objs["Chien"],
         )
         animal2 = Animal.objects.create(
             name="Luna",
             birthday=date(2019, 7, 15),
             federal_identification="CH-987-654-321",
             family=families[0],
+            species=species_objs["Chat"],
         )
         animal3 = Animal.objects.create(
             name="Charlie",
             birthday=date(2020, 1, 5),
             federal_identification="CH-555-666-777",
             family=families[1],
+            species=species_objs["Lapin"],
         )
         animal4 = Animal.objects.create(
             name="Bella",
             birthday=date(2017, 11, 20),
             federal_identification="CH-111-222-333",
             family=families[1],
+            species=species_objs["Chien"],
         )
 
         # SOAP Notes
