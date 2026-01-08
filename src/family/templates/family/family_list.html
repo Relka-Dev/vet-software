@@ -1,0 +1,41 @@
+{% extends "family/base.html" %}
+{% block title %}
+    Family list
+{% endblock title %}
+{% block family_content %}
+    <h3 class="text-2xl font-bold mb-4">Liste</h3>
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-10">
+        <table class="w-full text-sm text-left rtl:text-right text-gray-500 ">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-300 ">
+                <tr>
+                    <th scope="col" class="px-6 py-3">Id</th>
+                    <th scope="col" class="px-6 py-3">Prénom et Nom</th>
+                    <th scope="col" class="px-6 py-3">Téléphone</th>
+                    <th scope="col" class="px-6 py-3">Email</th>
+                    <th scope="col" class="px-6 py-3">Date de naissance</th>
+                    <th scope="col" class="px-6 py-3">
+                        <span class="sr-only">Edit</span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for principal in families %}
+                    <tr class="bg-white border-b border-gray-200 hover:bg-gray-50 ">
+                        <th scope="row"
+                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                            {{ principal.main_contact.id }}
+                        </th>
+                        <td class="px-6 py-4">{{ principal.main_contact }}</td>
+                        <td class="px-6 py-4">{{ principal.main_contact.phone }}</td>
+                        <td class="px-6 py-4">{{ principal.main_contact.email }}</td>
+                        <td class="px-6 py-4">{{ principal.main_contact.birthday|date:"d/m/Y" }}</td>
+                        <td class="px-6 py-4 text-right">
+                            <a href="{% url 'family_contacts' pk=principal.id %}"
+                               class="font-medium text-blue-600 hover:underline">Edit</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock family_content %}
