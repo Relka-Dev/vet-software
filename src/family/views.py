@@ -86,23 +86,16 @@ def edit_family_member(request, family_pk, person_pk):
 
     if request.method == 'POST':
         # Gérer la suppression
-        if form.is_valid() and 'delete-button' in request.POST:
+        if 'delete-button' in request.POST:
             if not is_main_contact:  # Ne pas supprimer le contact principal
                 person.delete()
             return redirect('family_contacts', pk=family_pk)
 
         # Gérer la modification
-        form = PersonForm(request.POST, instance=person)
-        if form.is_valid() and 'edit-button' in request.POST:
-            form.save()
-            return redirect('family_contacts', pk=family_pk)
-    else:
-        form = PersonForm(instance=person)
+        if 'edit-button' in request.POST:
+            form = PersonForm(request.POST, instance=person)
+            if form.is_valid():
+                form.save()
+                return redirect('family_contacts', pk=family_pk)
 
-    context = {
-        'form': form,
-        'family': family,
-        'person': person,
-        'is_main_contact': is_main_contact,
-    }
-    return render(request, 'family/family_details.html', context)
+    return redirect('family_contacts', pk=family_pk)
