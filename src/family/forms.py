@@ -16,36 +16,32 @@ class PersonForm(forms.ModelForm):
             'birthday',
         ]
         labels = {
-            'last_name': 'Prénom',
-            'first_name': 'Nom',
+            'last_name': 'Nom',
+            'first_name': 'Prénom',
             'phone': 'Téléphone',
             'email': 'Email',
             'birthday': 'Date de naissance',
         }
         widgets = {
             'last_name': forms.TextInput(
-                attrs={
-                    'class': COMMON_INPUT_CLASS,
-                }
+                attrs={'class': COMMON_INPUT_CLASS, 'placeholder': "Entrer le nom..."}
             ),
             'first_name': forms.TextInput(
                 attrs={
                     'class': COMMON_INPUT_CLASS,
+                    'placeholder': "Entrer le prénom...",
                 }
             ),
             'phone': forms.NumberInput(
                 attrs={
                     'class': COMMON_INPUT_CLASS,
+                    'placeholder': "Entrer le numéro de téléphone...",
                 }
             ),
             'email': forms.TextInput(
-                attrs={
-                    'class': COMMON_INPUT_CLASS,
-                }
+                attrs={'class': COMMON_INPUT_CLASS, 'placeholder': "Entrer l'email..."}
             ),
-            'birthday': forms.DateTimeInput(
-                attrs={
-                    'class': COMMON_INPUT_CLASS,
-                }
+            'birthday': forms.DateInput(
+                attrs={'class': COMMON_INPUT_CLASS, 'type': "date"}
             ),
         }

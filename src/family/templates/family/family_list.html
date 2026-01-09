@@ -19,18 +19,18 @@
                 </tr>
             </thead>
             <tbody>
-                {% for principal in families %}
+                {% for family in families %}
                     <tr class="bg-white border-b border-gray-200 hover:bg-gray-50 ">
                         <th scope="row"
                             class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                            {{ principal.main_contact.id }}
+                            {{ family.main_contact.id }}
                         </th>
-                        <td class="px-6 py-4">{{ principal.main_contact }}</td>
-                        <td class="px-6 py-4">{{ principal.main_contact.phone }}</td>
-                        <td class="px-6 py-4">{{ principal.main_contact.email }}</td>
-                        <td class="px-6 py-4">{{ principal.main_contact.birthday|date:"d/m/Y" }}</td>
+                        <td class="px-6 py-4">{{ family.main_contact }}</td>
+                        <td class="px-6 py-4">{{ family.main_contact.phone }}</td>
+                        <td class="px-6 py-4">{{ family.main_contact.email }}</td>
+                        <td class="px-6 py-4">{{ family.main_contact.birthday|date:"d/m/Y" }}</td>
                         <td class="px-6 py-4 text-right">
-                            <a href="{% url 'family_contacts' pk=principal.id %}"
+                            <a href="{% url 'family_contacts' pk=family.id %}"
                                class="font-medium text-blue-600 hover:underline">Edit</a>
                         </td>
                     </tr>

@@ -6,7 +6,10 @@ from person.models import Person
 
 def family_list(request):
     families = Family.objects.all()
-    return render(request, 'family/family_list.html', {'families': families})
+    form = PersonForm()
+    return render(
+        request, 'family/family_list.html', {'families': families, 'form': form}
+    )
 
 
 def family_contacts(request, pk):
@@ -40,10 +43,8 @@ def add_family(request):
             family = Family.objects.create(main_contact=person)
 
             return redirect('family_contacts', pk=family.pk)
-    else:
-        form = PersonForm()
 
-    return render(request, 'family/family_list.html', {'form': form})
+    return redirect('family_list')
 
 
 # Add (=create) an extra member to an existing family
@@ -82,8 +83,15 @@ def edit_family_member(request, family_pk, person_pk):
         return redirect('family_contacts', pk=family_pk)
 
     if request.method == 'POST':
+        # Gérer la suppression
+        if form.is_valid() and 'delete-button' in request.POST:
+            if not is_main_contact:  # Ne pas supprimer le contact principal
+                person.delete()
+            return redirect('family_contacts', pk=family_pk)
+
+        # Gérer la modification
         form = PersonForm(request.POST, instance=person)
-        if form.is_valid():
+        if form.is_valid() and 'edit-button' in request.POST:
             form.save()
             return redirect('family_contacts', pk=family_pk)
     else:
@@ -94,20 +102,5 @@ def edit_family_member(request, family_pk, person_pk):
         'family': family,
         'person': person,
         'is_main_contact': is_main_contact,
-    }
-    return render(request, 'family/family_details.html', context)
-
-
-# Delete family member
-def delete_family_member(request, member_pk):
-    extra_member = get_object_or_404(Extra_family_member, pk=member_pk)
-    family_pk = extra_member.family.pk
-
-    if request.method == 'POST':
-        extra_member.person.delete()  # This will also delete the extra_member due to CASCADE
-        return redirect('family_contacts', pk=family_pk)
-
-    context = {
-        'extra_member': extra_member,
     }
     return render(request, 'family/family_details.html', context)
