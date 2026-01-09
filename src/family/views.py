@@ -87,9 +87,14 @@ def edit_family_member(request, family_pk, person_pk):
     if request.method == 'POST':
         # Gérer la suppression
         if 'delete-button' in request.POST:
-            if not is_main_contact:  # Ne pas supprimer le contact principal
+            total_member = Extra_family_member.objects.filter(family=family).count()
+
+            if total_member == 0:
+                family.delete()
+                return redirect('family_list')
+            elif not is_main_contact:  # Ne pas supprimer le contact principal
                 person.delete()
-            return redirect('family_contacts', pk=family_pk)
+                return redirect('family_contacts', pk=family_pk)
 
         # Gérer la modification
         if 'edit-button' in request.POST:
