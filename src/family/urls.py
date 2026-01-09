@@ -9,7 +9,11 @@ urlpatterns = [
         name='family_contacts',
     ),
     path('add_family', views.add_family, name='add_family'),
-    path('add_family_member', views.add_family_member, name='add_family_member'),
+    path(
+        'add_family_member/<int:family_pk>',
+        views.add_family_member,
+        name='add_family_member',
+    ),
     path(
         'edit_family_member/<int:family_pk>/<int:person_pk>',
         views.edit_family_member,

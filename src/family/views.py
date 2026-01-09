@@ -13,6 +13,7 @@ def family_list(request):
 
 
 def family_contacts(request, pk):
+    form = PersonForm()
     try:
         if pk:
             family = Family.objects.get(pk=pk)
@@ -30,6 +31,7 @@ def family_contacts(request, pk):
             'family': family,
             'family_main_contact': family_main_contact,
             'family_contacts': family_contacts,
+            'form': form,
         },
     )
 
