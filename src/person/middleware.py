@@ -4,22 +4,19 @@ from person.models import Person
 
 
 class PersonAuthMiddleware:
-    """
-    Déconnexion automatique des utilisateur administrateur
-    """
-
     def __init__(self, get_response):
         self.get_response = get_response
 
     def __call__(self, request):
-        # Exclure les appels admin
-        excluded_paths = ['/admin/']
+        # Exclusion des sites suivants pour garder la connexion admin
+        excluded_paths = ['/admin', '/favicon.ico', '/static/', '/media/']
 
-        # Si l'admin est connecté mais que c'est pas une instance du modèle person, on déconnecte
+        if any(request.path.startswith(path) for path in excluded_paths):
+            return self.get_response(request)
+
+        # Pour le reste du site, on check si l'utilisateur est connecté en tant que instance de person. Sinon, logout.
         if request.user.is_authenticated and not isinstance(request.user, Person):
-            if not any(request.path.startswith(path) for path in excluded_paths):
-                logout(request)
-                return redirect('person:login')
+            logout(request)
+            # return redirect('person:login') # Si on veut la redirection si la personn est pas connectée
 
-        response = self.get_response(request)
-        return response
+        return self.get_response(request)
