@@ -7,8 +7,7 @@
             <a href="{% url 'family_list' %}" class="hover:text-blue-600">Familles</a>
             {% if family %}
                 <span class="mx-2">/</span>
-                <a href="{% url 'family_contacts' pk=family.pk %}"
-                   class="hover:text-blue-600">{{ family.main_contact }}</a>
+                {{ family.main_contact }}
             {% endif %}
         </nav>
         <div class="flex justify-between bg-white rounded-lg shadow-md p-6 text-3xl font-bold text-gray-800 mb-2">

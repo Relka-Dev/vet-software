@@ -7,8 +7,7 @@
             <a href="{% url 'animal_list' %}" class="hover:text-blue-600">Animaux</a>
             {% if animal %}
                 <span class="mx-2">/</span>
-                <a href="{% url 'animal_note_by_animal' animal_pk=animal.pk %}"
-                   class="hover:text-blue-600">{{ animal.name }}</a>
+                {{ animal.name }}
             {% endif %}
         </nav>
         <div class="flex justify-between bg-white rounded-lg shadow-md p-6 text-3xl font-bold text-gray-800 mb-2">
