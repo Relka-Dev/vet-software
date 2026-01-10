@@ -62,37 +62,37 @@ class Command(BaseCommand):
         # Create Inventory
         Inventory.objects.create(
             item=item1,
-            quantity=50,
+            quantity=1200,
             expiration_date=date(2026, 12, 31),
         )
         Inventory.objects.create(
             item=item2,
-            quantity=40,
+            quantity=3000,
             expiration_date=date(2026, 8, 15),
         )
         Inventory.objects.create(
             item=item3,
-            quantity=100,
+            quantity=1000,
             expiration_date=date(2025, 6, 30),
         )
         Inventory.objects.create(
             item=item4,
-            quantity=75,
+            quantity=2500,
             expiration_date=date(2026, 3, 20),
         )
         Inventory.objects.create(
             item=item5,
-            quantity=20,
+            quantity=2000,
             expiration_date=date(2027, 3, 15),
         )
         Inventory.objects.create(
             item=item6,
-            quantity=60,
+            quantity=600,
             expiration_date=date(2028, 1, 10),
         )
         Inventory.objects.create(
             item=item7,
-            quantity=200,
+            quantity=2000,
             expiration_date=date(2026, 9, 30),
         )
 

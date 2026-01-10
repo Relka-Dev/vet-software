@@ -25,7 +25,7 @@ def calendar_view(request, year=None, month=None, day=None):
     if request.user.is_authenticated:
         try:
             current_employee = Employee.objects.select_related('role', 'person').get(
-                person=request.user
+                person=request.person
             )
             user_role = current_employee.role.name
             is_reception = user_role == 'Réceptionniste'
@@ -93,7 +93,7 @@ def add_appointment(request):
     if request.method == 'POST':
         try:
             current_employee = Employee.objects.select_related('role').get(
-                person=request.user
+                person=request.person
             )
             is_reception = current_employee.role.name == 'Réceptionniste'
 
@@ -123,7 +123,7 @@ def update_appointment(request, pk):
 
     try:
         current_employee = Employee.objects.select_related('role').get(
-            person=request.user
+            person=request.person
         )
         is_reception = current_employee.role.name == 'Réceptionniste'
 

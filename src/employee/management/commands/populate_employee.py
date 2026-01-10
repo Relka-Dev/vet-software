@@ -34,8 +34,13 @@ class Command(BaseCommand):
             first_engagement_date=date(2018, 6, 15),
             role=role_vet,
         )
-        employee_receptionist = Employee.objects.create(
+        employee_vet3 = Employee.objects.create(
             person=persons[2],
+            first_engagement_date=date(2018, 6, 15),
+            role=role_vet,
+        )
+        employee_receptionist = Employee.objects.create(
+            person=persons[3],
             first_engagement_date=date(2020, 3, 1),
             role=role_receptionist,
         )
@@ -49,6 +54,7 @@ class Command(BaseCommand):
                 [(2025, 2025), (2026, 2026)],
             ),
             (employee_vet2, [0, 2, 4], [(9, 0, 17, 0)], [(2025, 2026)]),
+            (employee_vet3, [1, 3], [(10, 0, 16, 0)], [(2025, 2026)]),
             (employee_receptionist, range(5), [(8, 0, 17, 0)], [(2025, 2026)]),
         ]
 

@@ -30,6 +30,8 @@
          class="block px-2 py-1.5 pl-8 text-2xl no-underline text-gray-500 hover:text-gray-100">Inventaire</a>
       <a href="{% url 'dashboard' %}"
          class="block px-2 py-1.5 pl-8 text-2xl no-underline text-gray-500 hover:text-gray-100">Dashboard</a>
+      <a href="{% url 'logs' %}"
+         class="block px-2 py-1.5 pl-8 text-2xl no-underline text-gray-500 hover:text-gray-100">Logs</a>
       <a href="#"
          class="block px-2 py-1.5 pl-8 text-2xl no-underline text-gray-500 hover:text-gray-100">Profile</a>
       <div class="absolute bottom-5 w-48">
@@ -38,10 +40,14 @@
              class="block px-2 py-1.5 pl-8 text-xl no-underline text-gray-500 hover:text-gray-100">Déconnexion</a>
           <a href="#"
              class="block px-2 py-1.5 pl-8 text-xl no-underline text-gray-500 hover:text-gray-100 mt-2.5">
-            {{ user.get_full_name }}
-            {% if user.employee.exists %}
-              <br>
-              <span class="py-1.5 text-gray-400">{{ user.employee.first.role }}</span>
+            {% if request.person %}
+              {{ request.person.get_full_name }}
+              {% if request.person.employee.first %}
+                <br>
+                <span class="py-1.5 text-gray-400">{{ request.person.employee.first.role }}</span>
+              {% endif %}
+            {% else %}
+              Admin
             {% endif %}
           </a>
         {% else %}

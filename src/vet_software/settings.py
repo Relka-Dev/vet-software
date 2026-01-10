@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'family',
     'compressor',
     'dashboard',
+    'audit',
 ]
 
 

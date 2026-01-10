@@ -121,15 +121,18 @@ def add_animal(request):
         federal_identification = request.POST.get('federal_identification')
         family_id = request.POST.get('family')
         family = Family.objects.get(pk=family_id)
-        species = request.POST.get('species')
+        species_id = request.POST.get('species')
+        species = Species.objects.get(pk=species_id)
 
-        Animal.objects.create(
+        animal = Animal(
             name=name,
             birthday=birthday,
             federal_identification=federal_identification,
             family=family,
             species=species,
         )
+        animal._current_user = request.person
+        animal.save()
 
     return redirect('animal_list')
 
@@ -145,10 +148,12 @@ def update_animal(request, pk):
         species_id = request.POST.get('species')
         animal.family = Family.objects.get(id=family_id)
         animal.species = Species.objects.get(id=species_id)
+        animal._current_user = request.person
         animal.save()
         return redirect('animal_list')
 
     if request.method == 'POST' and 'delete-button' in request.POST:
+        animal._current_user = request.person
         animal.delete()
         return redirect('animal_list')
 
