@@ -47,12 +47,14 @@ def update_item(request, pk):
         item.price = request.POST.get('price')
         treatment_type_id = request.POST.get('treatment_type')
         item.treatment_type = TreatmentType.objects.get(id=treatment_type_id)
+        item._current_user = request.person
         item.save()
 
         return redirect('inventory_list')
 
     # otherwise delete the item with the delete button
     if request.method == 'POST' and 'delete-button' in request.POST:
+        item._current_user = request.person
         item.delete()
         return redirect('inventory_list')
 

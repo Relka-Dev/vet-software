@@ -26,9 +26,7 @@ class ActivityLog(models.Model):
     object_type = models.CharField(
         max_length=100,
     )
-    object_name = models.CharField(
-        max_length=200,
-    )
+    object_id = models.IntegerField()
     timestamp = models.DateTimeField(auto_now_add=True)
     details = models.TextField(blank=True)
 
@@ -38,4 +36,4 @@ class ActivityLog(models.Model):
         verbose_name_plural = "Journal d'activités"
 
     def __str__(self):
-        return f"{self.action} - {self.object_type}: {self.object_name}"
+        return f"{self.action} - {self.object_type}: {self.object_id}"

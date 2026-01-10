@@ -144,9 +144,11 @@ def update_appointment(request, pk):
         )
         appointment.start_date = request.POST.get('start_date')
         appointment.end_date = request.POST.get('end_date')
+        appointment._current_user = request.person
         appointment.save()
 
     if request.method == 'POST' and 'delete-button' in request.POST:
+        appointment._current_user = request.person
         appointment.delete()
 
     return redirect('calendar')
@@ -166,6 +168,9 @@ def appointment_details(request, pk):
             and procedure_form.is_valid()
             and equipment_form.is_valid()
         ):
+            item_form.instance._current_user = request.person
+            procedure_form.instance._current_user = request.person
+            equipment_form.instance._current_user = request.person
             item_form.save()
             procedure_form.save()
             equipment_form.save()

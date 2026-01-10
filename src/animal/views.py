@@ -53,6 +53,7 @@ def display_animal_note(request, animal_pk, note_pk):
             if form.is_valid():
                 new_note = form.save(commit=False)
                 new_note.animal = animal
+                new_note._current_user = request.person
                 new_note.save()
                 return redirect('animal_note', animal_pk=animal.id, note_pk=new_note.id)
         else:
@@ -66,15 +67,17 @@ def display_animal_note(request, animal_pk, note_pk):
                     return redirect(
                         'animal_note', animal_pk=animal.id, note_pk=animal_note.id
                     )
-
-                form.save()
+                instance = form.save(commit=False)
+                instance._current_user = request.person
+                instance.save()
                 return redirect(
                     'animal_note', animal_pk=animal.id, note_pk=animal_note.id
                 )
             elif form.is_valid() and 'delete-button' in request.POST:
+                animal_note._current_user = request.person
                 animal_note.delete()
                 return redirect('animal_note_by_animal', animal_pk=animal.id)
-            new_form = SOAPNoteForm()
+            new_form = SOAPNoteForm(user=request.person)
     else:
         form = SOAPNoteForm(instance=animal_note)
         new_form = SOAPNoteForm()

@@ -34,6 +34,7 @@ def update_inventory_on_save(sender, instance, created, **kwargs):
 
     if inventory_item.quantity >= difference:
         inventory_item.quantity -= difference
+        inventory_item._current_user = instance._current_user
         inventory_item.save()
     else:
         raise ValueError(
