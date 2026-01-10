@@ -31,7 +31,7 @@
             <td class="px-6 py-4">{{ animal.birthday|date:"d/m/Y" }}</td>
             <td class="px-6 py-4">{{ animal.federal_identification }}</td>
             <td class="px-6 py-4 hover:underline">
-              <a href="{% url 'animal_family_contacts' pk=animal.pk %}">{{ animal.family.main_contact }}</a>
+              <a href="{% url 'family_contacts' pk=animal.family.pk %}">{{ animal.family.main_contact }}</a>
             </td>
             <td class="px-6 py-4 text-right">
               <button onclick="toggleModal('edit-animal-{{ animal.id }}')"

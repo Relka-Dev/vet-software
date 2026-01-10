@@ -1,0 +1,10 @@
+add new family member:
+- create new Person
+- add this new Person to existing family
+
+if new Person has no family = create new Family:
+- create new Person
+- make this new Person the main_contact of Family
+
+edit/delete member = edit/delete Person
+edit/delete family

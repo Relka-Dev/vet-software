@@ -12,7 +12,7 @@ class Family(models.Model):
         verbose_name="Contact principal",
         null=False,
     )
-    creation_date = models.DateField()
+    creation_date = models.DateField(auto_now_add=True)
 
     class Meta:
         verbose_name = "Famille"

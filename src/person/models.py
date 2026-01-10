@@ -8,7 +8,9 @@ class Person(models.Model):
     phone = models.IntegerField(verbose_name="Numéro de téléphone")
     email = models.CharField(max_length=255, unique=True)
     birthday = models.DateField(verbose_name="Date de naissance")
-    password_hash = models.CharField(max_length=128, verbose_name="Mot de passe")
+    password_hash = models.CharField(
+        max_length=128, verbose_name="Mot de passe", null=True, blank=True
+    )
     last_login = models.DateTimeField(null=True, blank=True)
 
     # Django authentication properties
