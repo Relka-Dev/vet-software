@@ -5,6 +5,19 @@ COMMON_INPUT_CLASS = ' border border-gray-300 text-gray-900 text-sm rounded-lg b
 
 
 class SOAPNoteForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Si c'est une création (pas d'instance), masquer validated_by
+        if not self.instance.pk:
+            self.fields['validated_by'].widget = forms.HiddenInput()
+            self.fields['validated_by'].required = False
+
+        # Si déjà validé, rendre tous les champs en lecture seule
+        if self.instance.pk and self.instance.validated_by:
+            for field_name, field in self.fields.items():
+                field.disabled = True
+
     class Meta:
         model = SOAPNote
         fields = [

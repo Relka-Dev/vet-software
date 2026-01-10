@@ -38,6 +38,13 @@
                       class="font-medium text-blue-600 hover:underline">Edit</button>
             </td>
           </tr>
+
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <!-- Edit Popup Modal -->
+  {% for animal in animals %}
           <div id="edit-animal-{{ animal.id }}"
                tabindex="-1"
                aria-hidden="true"
@@ -129,14 +136,11 @@
                         </svg>
                         Supprimer
                       </button>
-                    </div>
-                  </form>
-                </div>
               </div>
             </div>
-          {% endfor %}
-        </tbody>
-      </table>
+          </form>
+        </div>
+      </div>
     </div>
-  </div>
+  {% endfor %}
 {% endblock animal_content %}

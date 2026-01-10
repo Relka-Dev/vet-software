@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from appointment.models import Appointment, Room, EmergencyType
 from animal.models import Animal
 from employee.models import Employee
+from .forms import AppointmentForm, ItemFormset, ProcedureFormset, EquipmentFormset
 
 
 def calendar_view(request, year=None, month=None, day=None):
@@ -145,3 +146,40 @@ def update_appointment(request, pk):
         appointment.delete()
 
     return redirect('calendar')
+
+
+# See all details about items, procedures and equipment used
+def appointment_details(request, pk):
+    appointment = get_object_or_404(Appointment, id=pk)
+
+    if request.method == 'POST':
+        item_form = ItemFormset(request.POST, instance=appointment)
+        procedure_form = ProcedureFormset(request.POST, instance=appointment)
+        equipment_form = EquipmentFormset(request.POST, instance=appointment)
+        if (
+            form.is_valid()
+            and item_form.is_valid()
+            and procedure_form.is_valid()
+            and equipment_form.is_valid()
+        ):
+            item_form.save()
+            procedure_form.save()
+            equipment_form.save()
+            return redirect('appointment_details', pk=appointment.pk)
+    else:
+        form = AppointmentForm(instance=appointment)
+        item_form = ItemFormset(instance=appointment)
+        procedure_form = ProcedureFormset(instance=appointment)
+        equipment_form = EquipmentFormset(instance=appointment)
+
+    return render(
+        request,
+        'appointment/appointment_view.html',
+        {
+            'appointment': appointment,
+            'form': form,
+            'item_formset': item_form,
+            'procedure_formset': procedure_form,
+            'equipment_formset': equipment_form,
+        },
+    )
