@@ -5,8 +5,10 @@ from datetime import date, timedelta, datetime
 from appointment.models import Appointment
 from employee.models import OpenHours, AvailabilityEmployee, Employee
 import json
+from django.contrib.auth.decorators import login_required
 
 
+@login_required
 def get_appointments_data(year_start, year_end, months):
     appointments_year = (
         Appointment.objects.filter(
@@ -37,6 +39,7 @@ def get_appointments_data(year_start, year_end, months):
     )
 
 
+@login_required
 def get_room_usage(year_start, year_end):
     today = timezone.now().date()
 
@@ -100,6 +103,7 @@ def get_room_usage(year_start, year_end):
     return json.dumps(room_usage_percentage), round(global_room_usage, 2)
 
 
+@login_required
 def get_vet_utilization(year_start, year_end):
     today = timezone.now().date()
 
@@ -158,6 +162,7 @@ def get_vet_utilization(year_start, year_end):
     return json.dumps(vet_usage_percentage), round(global_vet_usage, 2)
 
 
+@login_required
 def dashboard_view(request, year=None):
     today = timezone.now().date()
     months = [

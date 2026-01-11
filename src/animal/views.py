@@ -5,8 +5,10 @@ from django.shortcuts import redirect, render
 from family.models import Family
 from .models import Animal, SOAPNote, Species
 from .forms import SOAPNoteForm
+from django.contrib.auth.decorators import login_required
 
 
+@login_required
 def animal_list(request):
     animals = Animal.objects.all()
     families = Family.objects.all()
@@ -18,6 +20,7 @@ def animal_list(request):
     )
 
 
+@login_required
 def display_animal_note(request, animal_pk, note_pk):
     animal = None
     animal_note = None
@@ -95,6 +98,7 @@ def display_animal_note(request, animal_pk, note_pk):
     )
 
 
+@login_required
 def animal_family_contacts(request, pk):
     try:
         if pk:
@@ -117,6 +121,7 @@ def animal_family_contacts(request, pk):
     )
 
 
+@login_required
 def add_animal(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -140,6 +145,7 @@ def add_animal(request):
     return redirect('animal_list')
 
 
+@login_required
 def update_animal(request, pk):
     animal = Animal.objects.get(id=pk)
 

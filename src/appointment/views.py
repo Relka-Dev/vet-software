@@ -5,8 +5,10 @@ from appointment.models import Appointment, Room, EmergencyType
 from animal.models import Animal
 from employee.models import Employee
 from .forms import AppointmentForm, ItemFormset, ProcedureFormset, EquipmentFormset
+from django.contrib.auth.decorators import login_required
 
 
+@login_required
 def calendar_view(request, year=None, month=None, day=None):
     if year and month and day:
         selected_date = timezone.make_aware(datetime(year, month, day))
@@ -89,6 +91,7 @@ def calendar_view(request, year=None, month=None, day=None):
     return render(request, 'appointment/calendar.html', context)
 
 
+@login_required
 def add_appointment(request):
     if request.method == 'POST':
         try:
@@ -118,6 +121,7 @@ def add_appointment(request):
     return redirect('calendar')
 
 
+@login_required
 def update_appointment(request, pk):
     appointment = get_object_or_404(Appointment, id=pk)
 
@@ -154,6 +158,7 @@ def update_appointment(request, pk):
     return redirect('calendar')
 
 
+@login_required
 # See all details about items, procedures and equipment used
 def appointment_details(request, pk):
     appointment = get_object_or_404(Appointment, id=pk)
