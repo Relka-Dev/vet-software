@@ -94,6 +94,9 @@ pip install -r requirements.txt
 cd static
 npm install
 cd ..
+
+# reportLab dependencies (for PDF generation)
+pip install reportlab
 ```
 
 4. **Setup Django**

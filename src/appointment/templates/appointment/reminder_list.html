@@ -23,16 +23,13 @@
                                     Dernière visite: {{ reminder.original_date|date:"d/m/Y" }}
                                 </p>
                             </div>
-                            <a href="#"
-                               class="text-xs bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded whitespace-nowrap">
-                                Envoyé
-                            </a>
                         </div>
                     </li>
                 {% endfor %}
             </ul>
         {% endif %}
         {% if reminders_rest %}
+            <br>
             <div class="border rounded-lg p-6 bg-blue-50 shadow flex flex-col">
                 <h3 class="text-lg font-semibold text-blue-800 mb-2">Prochains rappels ({{ reminders_rest|length }})</h3>
                 <div class="space-y-1">
