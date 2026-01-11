@@ -1,8 +1,7 @@
 from django.shortcuts import render
-from django.db.models import Count
 from django.utils import timezone
 from datetime import date, timedelta, datetime
-from appointment.models import Appointment
+from appointment.models import Appointment, AppointmentItem, AppointmentProcedure
 from employee.models import OpenHours, AvailabilityEmployee, Employee
 import json
 from django.contrib.auth.decorators import login_required
@@ -13,29 +12,38 @@ def get_appointments_data(year_start, year_end, months):
         Appointment.objects.filter(
             start_date__date__gte=year_start, start_date__date__lte=year_end
         )
-        .values('start_date__month')
-        .annotate(count=Count('id'))
+        .values('start_date__month', 'id')
         .order_by('start_date__month')
     )
 
     months_label = []
     counts_month = []
+    amounts_month = []
 
     for month_num in range(1, 13):
         months_label.append(months[month_num - 1])
-        count = next(
-            (
-                item['count']
-                for item in appointments_year
-                if item['start_date__month'] == month_num
-            ),
-            0,
-        )
-        counts_month.append(count)
+        appointments_ids = [
+            a['id'] for a in appointments_year if a['start_date__month'] == month_num
+        ]
+        counts_month.append(len(appointments_ids))
 
-    return json.dumps({'dates': months_label, 'counts': counts_month}), sum(
-        counts_month
-    )
+        total_amount = 0
+        # Items
+        items = AppointmentItem.objects.filter(appointment_id__in=appointments_ids)
+        for item in items:
+            total_amount += float(item.item.price) * item.quantity
+        # Procedures
+        procedures = AppointmentProcedure.objects.filter(
+            appointment_id__in=appointments_ids
+        )
+        for proc in procedures:
+            total_amount += float(proc.procedure.price) * proc.quantity
+
+        amounts_month.append(round(total_amount, 2))
+
+    return json.dumps(
+        {'dates': months_label, 'counts': counts_month, 'amounts': amounts_month}
+    ), sum(counts_month)
 
 
 def get_room_usage(year_start, year_end):
@@ -156,7 +164,7 @@ def get_vet_utilization(year_start, year_end):
             vet_usage_percentage
         )
 
-    return json.dumps(vet_usage_percentage), round(global_vet_usage, 2)
+    return vet_usage_percentage, round(global_vet_usage, 2)
 
 
 @login_required

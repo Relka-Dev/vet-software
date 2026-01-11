@@ -1,8 +1,8 @@
-<div class="max-w-sm w-full bg-white rounded-lg shadow-sm p-4 md:p-6">
+<div class="w-full bg-white rounded-lg shadow-sm p-4 md:p-6 h-full">
     <div class="flex justify-between items-start mb-4">
         <div class="flex items-end space-x-2">
             <span class="leading-none text-3xl font-bold text-gray-900">{{ total_appointments }}</span>
-            <h5 class="text-base font-normal text-gray-500">Nombre de consultations en {{ current_year }}</h5>
+            <h5 class="text-base font-normal text-gray-500">Nombre de consultations</h5>
         </div>
     </div>
     <div id="appointments-chart"></div>
@@ -13,10 +13,17 @@
 
     function initAppointmentsChart() {
         const options = {
-            series: [{
-                name: 'Rendez-vous',
-                data: appointmentsData.counts
-            }],
+            series: [    {
+            name: 'Rendez-vous',
+            data: appointmentsData.counts,
+            type: 'column'
+        },
+        {
+            name: 'Montant facturé',
+            data: appointmentsData.amounts,
+            type: 'column',
+            yAxis: 1
+        }],
             chart: {
                 type: 'bar',
                 height: 350,
@@ -28,21 +35,45 @@
                 bar: {
                     horizontal: false,
                     columnWidth: '55%',
-                    borderRadius: 4
+                    borderRadius: 4,
+                    dataLabels: {
+                        orientation:'vertical'
+                    }
                 }
             },
+            dataLabels: {
+                enabled: true,
+                style: {
+                    fontWeight: 'bold'
+                },
+                formatter: function (val, opts) {
+                    if (opts.seriesIndex === 0) {
+                        return val + ' %';
+                    } else if (opts.seriesIndex === 1) {
+                        return val + ' CHF';
+                    }
+                    return val;
+                },
+
+            },
             fill: {
-                colors: ['#2563eb']
+                colors: ['#7285B8', '#A8A2FB'],
             },
             xaxis: {
                 categories: appointmentsData.dates
             },
-            yaxis: {
-                title: {
-                    text: '# consultations'
+            yaxis: [
+                {
+                    title: { text: '# consultations' },
+                    labels: { style: { colors: '#7285B8' } }
+                },
+                {
+                    opposite: true,
+                    title: { text: 'Montant facturé (CHF)' },
+                    labels: { style: { colors: '#A8A2FB' } }
                 }
-            },
-            colors: ['#2563eb']
+            ],
+            colors: ['#7285B8', '#A8A2FB'],
         };
 
         if (appointmentsChart) {
