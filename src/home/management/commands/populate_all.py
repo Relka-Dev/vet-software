@@ -14,7 +14,10 @@ from appointment.models import (
 )
 from inventory.models import Inventory, Item, TreatmentType
 from animal.models import SOAPNote, Animal
+from django.db.models.signals import post_save, post_delete
+import audit.signals as audit_signals
 from employee.models import AvailabilityEmployee, Employee, OpenHours, Role
+from audit.models import ActivityLog
 from family.models import Extra_family_member, Family
 from person.models import Person
 
@@ -27,42 +30,56 @@ class Command(BaseCommand):
             self.style.WARNING("Starting complete database population...")
         )
 
-        self.stdout.write("\nClearing existing data...")
-        AppointmentItem.objects.all().delete()
-        AppointmentEquipment.objects.all().delete()
-        AppointmentProcedure.objects.all().delete()
-        Appointment.objects.all().delete()
-        Equipment.objects.all().delete()
-        Procedure.objects.all().delete()
-        EmergencyType.objects.all().delete()
-        Room.objects.all().delete()
-        RoomType.objects.all().delete()
-        Inventory.objects.all().delete()
-        Item.objects.all().delete()
-        TreatmentType.objects.all().delete()
-        SOAPNote.objects.all().delete()
-        Animal.objects.all().delete()
-        AvailabilityEmployee.objects.all().delete()
-        Employee.objects.all().delete()
-        Role.objects.all().delete()
-        Extra_family_member.objects.all().delete()
-        Family.objects.all().delete()
-        Person.objects.all().delete()
-        OpenHours.objects.all().delete()
+        # Désactiver les signaux pendant la population
+        post_save.disconnect(audit_signals.log_animal_change, sender=Animal)
+        post_delete.disconnect(audit_signals.log_animal_delete, sender=Animal)
+        post_save.disconnect(audit_signals.log_soapnote_change, sender=SOAPNote)
+        post_delete.disconnect(audit_signals.log_soapnote_delete, sender=SOAPNote)
 
-        self.stdout.write(self.style.SUCCESS("All existing data cleared"))
+        try:
+            self.stdout.write("\nClearing existing data...")
+            AppointmentItem.objects.all().delete()
+            AppointmentEquipment.objects.all().delete()
+            AppointmentProcedure.objects.all().delete()
+            Appointment.objects.all().delete()
+            Equipment.objects.all().delete()
+            Procedure.objects.all().delete()
+            EmergencyType.objects.all().delete()
+            Room.objects.all().delete()
+            RoomType.objects.all().delete()
+            Inventory.objects.all().delete()
+            Item.objects.all().delete()
+            TreatmentType.objects.all().delete()
+            SOAPNote.objects.all().delete()
+            Animal.objects.all().delete()
+            AvailabilityEmployee.objects.all().delete()
+            Employee.objects.all().delete()
+            Role.objects.all().delete()
+            Extra_family_member.objects.all().delete()
+            Family.objects.all().delete()
+            Person.objects.all().delete()
+            OpenHours.objects.all().delete()
+            ActivityLog.objects.all().delete()
 
-        commands = [
-            'populate_person',
-            'populate_family',
-            'populate_employee',
-            'populate_animal',
-            'populate_inventory',
-            'populate_appointment',
-            'populate_open_hours',
-        ]
+            self.stdout.write(self.style.SUCCESS("All existing data cleared"))
 
-        for command in commands:
-            call_command(command)
+            commands = [
+                'populate_person',
+                'populate_family',
+                'populate_employee',
+                'populate_animal',
+                'populate_inventory',
+                'populate_appointment',
+                'populate_open_hours',
+            ]
 
-        self.stdout.write(self.style.SUCCESS("✓ All data successfully populated!"))
+            for command in commands:
+                call_command(command)
+
+            self.stdout.write(self.style.SUCCESS("All data successfully populated!"))
+        finally:
+            # Réactiver les signaux
+            post_save.connect(audit_signals.log_animal_change, sender=Animal)
+            post_delete.connect(audit_signals.log_animal_delete, sender=Animal)
+            post_save.connect(audit_signals.log_soapnote_change, sender=SOAPNote)
+            post_delete.connect(audit_signals.log_soapnote_delete, sender=SOAPNote)

@@ -5,8 +5,10 @@ from appointment.models import Appointment, Room, EmergencyType
 from animal.models import Animal
 from employee.models import Employee
 from .forms import AppointmentForm, ItemFormset, ProcedureFormset, EquipmentFormset
+from django.contrib.auth.decorators import login_required
 
 
+@login_required
 def calendar_view(request, year=None, month=None, day=None):
     if year and month and day:
         selected_date = timezone.make_aware(datetime(year, month, day))
@@ -25,7 +27,7 @@ def calendar_view(request, year=None, month=None, day=None):
     if request.user.is_authenticated:
         try:
             current_employee = Employee.objects.select_related('role', 'person').get(
-                person=request.user
+                person=request.person
             )
             user_role = current_employee.role.name
             is_reception = user_role == 'Réceptionniste'
@@ -89,11 +91,12 @@ def calendar_view(request, year=None, month=None, day=None):
     return render(request, 'appointment/calendar.html', context)
 
 
+@login_required
 def add_appointment(request):
     if request.method == 'POST':
         try:
             current_employee = Employee.objects.select_related('role').get(
-                person=request.user
+                person=request.person
             )
             is_reception = current_employee.role.name == 'Réceptionniste'
 
@@ -102,7 +105,7 @@ def add_appointment(request):
             else:
                 employee_id = current_employee.id
 
-            Appointment.objects.create(
+            appointment = Appointment(
                 animal=Animal.objects.get(id=request.POST.get('animal')),
                 room=Room.objects.get(id=request.POST.get('room')),
                 employee=Employee.objects.get(id=employee_id),
@@ -112,18 +115,22 @@ def add_appointment(request):
                 start_date=request.POST.get('start_date'),
                 end_date=request.POST.get('end_date'),
             )
+            appointment._current_user = request.person
+            appointment.save()
+
         except Employee.DoesNotExist:
             pass
 
     return redirect('calendar')
 
 
+@login_required
 def update_appointment(request, pk):
     appointment = get_object_or_404(Appointment, id=pk)
 
     try:
         current_employee = Employee.objects.select_related('role').get(
-            person=request.user
+            person=request.person
         )
         is_reception = current_employee.role.name == 'Réceptionniste'
 
@@ -144,14 +151,17 @@ def update_appointment(request, pk):
         )
         appointment.start_date = request.POST.get('start_date')
         appointment.end_date = request.POST.get('end_date')
+        appointment._current_user = request.person
         appointment.save()
 
     if request.method == 'POST' and 'delete-button' in request.POST:
+        appointment._current_user = request.person
         appointment.delete()
 
     return redirect('calendar')
 
 
+@login_required
 # See all details about items, procedures and equipment used
 def appointment_details(request, pk):
     appointment = get_object_or_404(Appointment, id=pk)
@@ -166,6 +176,9 @@ def appointment_details(request, pk):
             and procedure_form.is_valid()
             and equipment_form.is_valid()
         ):
+            item_form.instance._current_user = request.person
+            procedure_form.instance._current_user = request.person
+            equipment_form.instance._current_user = request.person
             item_form.save()
             procedure_form.save()
             equipment_form.save()

@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from datetime import date
 from person.models import Person
+from django.contrib.auth.hashers import make_password
 
 
 class Command(BaseCommand):
@@ -12,36 +13,36 @@ class Command(BaseCommand):
         # Create Persons
         persons = [
             Person.objects.create(
-                first_name="Marie",
-                last_name="Dupont",
+                first_name="Grace",
+                last_name="Naing",
                 phone=41791234567,
-                email="marie.dupont@example.ch",
+                email="grace.naing@vet.ch",
                 birthday=date(1985, 3, 15),
-                password_hash="hashed_password_1",
+                password_hash=make_password("1234"),
             ),
             Person.objects.create(
-                first_name="Jean",
-                last_name="Martin",
+                first_name="Karel",
+                last_name="Svoboda",
                 phone=41791234568,
-                email="jean.martin@example.ch",
+                email="karel.svoboda@vet.ch",
                 birthday=date(1990, 7, 22),
-                password_hash="hashed_password_2",
+                password_hash=make_password("1234"),
             ),
             Person.objects.create(
-                first_name="Sophie",
-                last_name="Bernard",
+                first_name="Aurélie",
+                last_name="Pham",
                 phone=41791234569,
-                email="sophie.bernard@example.ch",
+                email="aurelie.pham@vet.ch",
                 birthday=date(1988, 11, 5),
-                password_hash="hashed_password_3",
+                password_hash=make_password("1234"),
             ),
             Person.objects.create(
-                first_name="Pierre",
-                last_name="Leroy",
+                first_name="Martin",
+                last_name="Martin",
                 phone=41791234570,
-                email="pierre.leroy@example.ch",
+                email="martin.martin@vet.ch",
                 birthday=date(1975, 4, 18),
-                password_hash="hashed_password_4",
+                password_hash=make_password("1234"),
             ),
             Person.objects.create(
                 first_name="Claire",
