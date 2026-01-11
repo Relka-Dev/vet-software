@@ -105,7 +105,7 @@ def add_appointment(request):
             else:
                 employee_id = current_employee.id
 
-            Appointment.objects.create(
+            appointment = Appointment(
                 animal=Animal.objects.get(id=request.POST.get('animal')),
                 room=Room.objects.get(id=request.POST.get('room')),
                 employee=Employee.objects.get(id=employee_id),
@@ -115,6 +115,9 @@ def add_appointment(request):
                 start_date=request.POST.get('start_date'),
                 end_date=request.POST.get('end_date'),
             )
+            appointment._current_user = request.person
+            appointment.save()
+
         except Employee.DoesNotExist:
             pass
 
