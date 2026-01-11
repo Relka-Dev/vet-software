@@ -8,6 +8,7 @@
     <table class="w-full text-sm text-left rtl:text-right text-gray-500 ">
       <thead class="text-xs text-gray-700 uppercase bg-gray-300 ">
         <tr>
+          <th scope="col" class="px-6 py-3">Espèce</th>
           <th scope="col" class="px-6 py-3">Prénom</th>
           <th scope="col" class="px-6 py-3">Nom de famille</th>
           <th scope="col" class="px-6 py-3">Date de naissance</th>
@@ -21,6 +22,7 @@
       <tbody>
         {% for animal in animals %}
           <tr class="bg-white border-b border-gray-200 hover:bg-gray-50 ">
+            <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">{{ animal.species.name }}</td>
             <th scope="row"
                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap hover:underline">
               <a href="{% url 'animal_note_by_animal' animal_pk=animal.pk %}">{{ animal.name }}</a>
@@ -36,6 +38,13 @@
                       class="font-medium text-blue-600 hover:underline">Edit</button>
             </td>
           </tr>
+
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <!-- Edit Popup Modal -->
+  {% for animal in animals %}
           <div id="edit-animal-{{ animal.id }}"
                tabindex="-1"
                aria-hidden="true"
@@ -43,7 +52,7 @@
             <div class="relative p-4 w-full max-w-md max-h-full">
               <div class="relative p-4 bg-white rounded-lg shadow-sm">
                 <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
-                  <h3 class="text-lg font-semibold text-gray-900">Modifier l'article</h3>
+                  <h3 class="text-lg font-semibold text-gray-900">Modifier l'animal</h3>
                   <button type="button"
                           onclick="toggleModal('edit-animal-{{ animal.id }}')"
                           class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center">
@@ -86,6 +95,18 @@
                              value="{{ animal.birthday|date:'Y-m-d' }}"
                              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5">
                     </div>
+                    <div class="col-span-2 sm:col-span-1">
+                      <label for="species-{{ animal.id }}"
+                             class="block mb-2 text-sm font-medium text-gray-900">Espèce</label>
+                      <select id="species-{{ animal.id }}"
+                              name="species"
+                              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5">
+                        {% for specie in species %}
+                          <option value="{{ specie.id }}"
+                                  {% if specie.id == animal.species.id %}selected{% endif %}>{{ specie.name }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
                     <div class="col-span-2">
                       <label for="family-{{ animal.id }}"
                              class="block mb-2 text-sm font-medium text-gray-900">Contact</label>
@@ -115,14 +136,11 @@
                         </svg>
                         Supprimer
                       </button>
-                    </div>
-                  </form>
-                </div>
               </div>
             </div>
-          {% endfor %}
-        </tbody>
-      </table>
+          </form>
+        </div>
+      </div>
     </div>
-  </div>
+  {% endfor %}
 {% endblock animal_content %}

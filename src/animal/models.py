@@ -3,11 +3,25 @@ from family.models import Family
 from employee.models import Employee
 
 
+class Species(models.Model):
+    """Espèces des animaux"""
+
+    name = models.CharField(max_length=50, verbose_name="Nom de l'espèce", unique=True)
+
+    class Meta:
+        verbose_name = "Espèce"
+        verbose_name_plural = "Espèces"
+
+    def __str__(self):
+        return self.name
+
+
 class Animal(models.Model):
     """Animaux pris en charge par le cabinet"""
 
     name = models.CharField(null=False, max_length=50, verbose_name="Nom de l'animal")
     birthday = models.DateField()
+    death_date = models.DateField(null=True, blank=True)
 
     federal_identification = models.CharField(
         max_length=100, verbose_name="Identification fédérale"
@@ -16,13 +30,19 @@ class Animal(models.Model):
     family = models.ForeignKey(
         Family, on_delete=models.PROTECT, related_name="animal", verbose_name="Contact"
     )
+    species = models.ForeignKey(
+        "Species",
+        on_delete=models.PROTECT,
+        related_name="animals",
+        verbose_name="Espèce",
+    )
 
     class Meta:
         verbose_name = "Animal"
         verbose_name_plural = "Animaux"
 
     def __str__(self):
-        return f"{self.name} {self.family.main_contact.last_name} ({self.birthday})"
+        return f"{self.species}: {self.name} {self.family.main_contact.last_name} ({self.birthday})"
 
 
 class SOAPNote(models.Model):
@@ -59,6 +79,8 @@ class SOAPNote(models.Model):
         on_delete=models.PROTECT,
         related_name="validated_notes",
         verbose_name="Validé par",
+        blank=True,
+        null=True,
     )
 
     class Meta:

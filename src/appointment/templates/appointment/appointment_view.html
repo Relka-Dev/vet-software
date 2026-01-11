@@ -1,0 +1,60 @@
+{% extends "appointment/base.html" %}
+{% block title %}
+    Détails du rendez-vous
+{% endblock title %}
+{% block calendar_content %}
+    <div>
+        <h1 class="text-2xl font-bold mb-4">
+            Détails du rendez-vous -
+            <a href="{% url 'animal_note_by_animal' animal_pk=appointment.animal.id %}"
+               class="font-medium hover:underline">{{ appointment.animal.name }}</a>
+        </h1>
+        <div class="text-gray-600 mb-6">
+            <div>{{ appointment.start_date|date:"H:i" }} - {{ appointment.end_date|date:"H:i" }}</div>
+            <div>Employé: {{ appointment.employee }}</div>
+            <div>Salle: {{ appointment.room }}</div>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="grid grid-cols-3 gap-6 mb-6">
+                <!-- Section Articles -->
+                <div class="border rounded-lg p-6 bg-white shadow flex flex-col">
+                    <h2 class="text-xl font-semibold mb-4 text-gray-800">Articles</h2>
+                    {{ item_formset.management_form }}
+                    <div id="item-formset" class="space-y-4">
+                        {% for item_form in item_formset %}
+                            <div class="item-form border-b pb-4 mb-4 last:border-b-0">{{ item_form.as_p }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- Section Procédures -->
+                <div class="border rounded-lg p-6 bg-white shadow flex flex-col">
+                    <h2 class="text-xl font-semibold mb-4 text-gray-800">Procédures</h2>
+                    {{ procedure_formset.management_form }}
+                    <div id="procedure-formset" class="space-y-4">
+                        {% for procedure_form in procedure_formset %}
+                            <div class="procedure-form border-b pb-4 mb-4 last:border-b-0">{{ procedure_form.as_p }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- Section Équipements -->
+                <div class="border rounded-lg p-6 bg-white shadow flex flex-col">
+                    <h2 class="text-xl font-semibold mb-4 text-gray-800">Équipements</h2>
+                    {{ equipment_formset.management_form }}
+                    <div id="equipment-formset" class="space-y-4">
+                        {% for equipment_form in equipment_formset %}
+                            <div class="equipment-form border-b pb-4 mb-4 last:border-b-0">{{ equipment_form.as_p }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4 mt-4">
+                <button type="submit"
+                        name="edit-button"
+                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                    Enregister
+                </button>
+            </div>
+        </form>
+    </div>
+{% endblock calendar_content %}

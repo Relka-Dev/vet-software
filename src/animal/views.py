@@ -1,16 +1,20 @@
+from pyexpat.errors import messages
 from click import edit
 from django.shortcuts import redirect, render
 
 from family.models import Family
-from .models import Animal, SOAPNote
+from .models import Animal, SOAPNote, Species
 from .forms import SOAPNoteForm
 
 
 def animal_list(request):
     animals = Animal.objects.all()
     families = Family.objects.all()
+    species = Species.objects.all()
     return render(
-        request, 'animal/animal_list.html', {'animals': animals, 'families': families}
+        request,
+        'animal/animal_list.html',
+        {'animals': animals, 'families': families, 'species': species},
     )
 
 
@@ -54,6 +58,15 @@ def display_animal_note(request, animal_pk, note_pk):
         else:
             form = SOAPNoteForm(request.POST, instance=animal_note)
             if form.is_valid() and 'edit-button' in request.POST:
+                if animal_note.validated_by:
+                    messages.error(
+                        request,
+                        "Ce rendez-vous est déjà validé et ne peut plus être modifié.",
+                    )
+                    return redirect(
+                        'animal_note', animal_pk=animal.id, note_pk=animal_note.id
+                    )
+
                 form.save()
                 return redirect(
                     'animal_note', animal_pk=animal.id, note_pk=animal_note.id
@@ -108,11 +121,14 @@ def add_animal(request):
         federal_identification = request.POST.get('federal_identification')
         family_id = request.POST.get('family')
         family = Family.objects.get(pk=family_id)
+        species = request.POST.get('species')
+
         Animal.objects.create(
             name=name,
             birthday=birthday,
             federal_identification=federal_identification,
             family=family,
+            species=species,
         )
 
     return redirect('animal_list')
@@ -126,7 +142,9 @@ def update_animal(request, pk):
         animal.birthday = request.POST.get('birthday')
         animal.federal_identification = request.POST.get('federal_identification')
         family_id = request.POST.get('family')
+        species_id = request.POST.get('species')
         animal.family = Family.objects.get(id=family_id)
+        animal.species = Species.objects.get(id=species_id)
         animal.save()
         return redirect('animal_list')
 
