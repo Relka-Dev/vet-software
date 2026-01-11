@@ -118,6 +118,7 @@ def add_appointment(request):
                 end_date=request.POST.get('end_date'),
             )
             appointment.full_clean()
+            appointment._current_user = request.person
             appointment.save()
             messages.success(request, "Rendez-vous créé avec succès !")
 
