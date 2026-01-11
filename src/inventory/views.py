@@ -1,6 +1,9 @@
 from django.shortcuts import redirect, render
 from .models import Inventory, Item, TreatmentType
+from django.contrib.auth.decorators import login_required
 
+
+@login_required
 
 # function used to render database instances
 def inventory_list(request):
@@ -14,6 +17,7 @@ def inventory_list(request):
     )
 
 
+@login_required
 def add_item(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -36,6 +40,7 @@ def add_item(request):
     return redirect('inventory_list')
 
 
+@login_required
 def update_item(request, pk):
     # make sure it's the right item
     item = Item.objects.get(id=pk)
@@ -47,12 +52,14 @@ def update_item(request, pk):
         item.price = request.POST.get('price')
         treatment_type_id = request.POST.get('treatment_type')
         item.treatment_type = TreatmentType.objects.get(id=treatment_type_id)
+        item._current_user = request.person
         item.save()
 
         return redirect('inventory_list')
 
     # otherwise delete the item with the delete button
     if request.method == 'POST' and 'delete-button' in request.POST:
+        item._current_user = request.person
         item.delete()
         return redirect('inventory_list')
 

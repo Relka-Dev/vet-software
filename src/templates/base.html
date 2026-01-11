@@ -20,28 +20,71 @@
   </head>
   <body class="bg-gray-50 font-lato">
     <div class="h-screen w-48 fixed left-0 top-0 z-10 bg-gray-900 overflow-x-hidden pt-5">
-      <a href="{% url 'index' %}"
-         class="block px-2 py-1.5 pl-8 text-2xl no-underline text-gray-500 hover:text-gray-100">Accueil</a>
-      <a href="{% url 'calendar' %}"
-         class="block px-2 py-1.5 pl-8 text-2xl no-underline text-gray-500 hover:text-gray-100">Calendrier</a>
-      <a href="{% url 'animal_list' %}"
-         class="block px-2 py-1.5 pl-8 text-2xl no-underline text-gray-500 hover:text-gray-100">Animaux</a>
-      <a href="{% url 'inventory_list' %}"
-         class="block px-2 py-1.5 pl-8 text-2xl no-underline text-gray-500 hover:text-gray-100">Inventaire</a>
-      <a href="{% url 'dashboard' %}"
-         class="block px-2 py-1.5 pl-8 text-2xl no-underline text-gray-500 hover:text-gray-100">Dashboard</a>
-      <a href="#"
-         class="block px-2 py-1.5 pl-8 text-2xl no-underline text-gray-500 hover:text-gray-100">Profile</a>
+      <li>
+        <a href="{% url 'index' %}"
+           class="block px-2 py-1.5 pl-8 text-2xl no-underline text-gray-500 hover:text-gray-100">Accueil</a>
+      </li>
+      <li>
+        <a href="{% url 'calendar' %}"
+           class="block px-2 py-1.5 pl-8 text-2xl no-underline text-gray-500 hover:text-gray-100">Calendrier</a>
+      </li>
+      <li>
+        <button type="button"
+                aria-controls="dropdown-client"
+                data-collapse-toggle="dropdown-client"
+                class="flex items-center w-full">
+          <span class="block px-2 py-1.5 pl-8 text-2xl no-underline text-gray-500 hover:text-gray-100">Clients</span>
+          <svg class="w-4 h-4 mr-2 text-gray-500"
+               aria-hidden="true"
+               xmlns="http://www.w3.org/2000/svg"
+               width="24"
+               height="24"
+               fill="none"
+               viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7" />
+          </svg>
+        </button>
+        <ul id="dropdown-client" class="hidden py-2 space-y-2">
+          <li>
+            <a href="{% url 'animal_list' %}"
+               class="block px-2 py-1.5 pl-8 text-xl no-underline text-gray-500 hover:text-gray-100">Animaux</a>
+          </li>
+          <li>
+            <a href="{% url 'family_list' %}"
+               class="block px-2 py-1.5 pl-8 text-xl no-underline text-gray-500 hover:text-gray-100">Familles</a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="{% url 'inventory_list' %}"
+           class="block px-2 py-1.5 pl-8 text-2xl no-underline text-gray-500 hover:text-gray-100">Inventaire</a>
+      </li>
+      <li>
+        <a href="{% url 'dashboard' %}"
+           class="block px-2 py-1.5 pl-8 text-2xl no-underline text-gray-500 hover:text-gray-100">Dashboard</a>
+      </li>
+      <li>
+        <a href="{% url 'logs' %}"
+           class="block px-2 py-1.5 pl-8 text-2xl no-underline text-gray-500 hover:text-gray-100">Logs</a>
+      </li>
+      <li>
+        <a href="#"
+           class="block px-2 py-1.5 pl-8 text-2xl no-underline text-gray-500 hover:text-gray-100">Profile</a>
+      </li>
       <div class="absolute bottom-5 w-48">
         {% if user.is_authenticated %}
           <a href="{% url 'person:logout' %}"
              class="block px-2 py-1.5 pl-8 text-xl no-underline text-gray-500 hover:text-gray-100">Déconnexion</a>
           <a href="#"
              class="block px-2 py-1.5 pl-8 text-xl no-underline text-gray-500 hover:text-gray-100 mt-2.5">
-            {{ user.get_full_name }}
-            {% if user.employee.exists %}
-              <br>
-              <span class="py-1.5 text-gray-400">{{ user.employee.first.role }}</span>
+            {% if request.person %}
+              {{ request.person.get_full_name }}
+              {% if request.person.employee.first %}
+                <br>
+                <span class="py-1.5 text-gray-400">{{ request.person.employee.first.role }}</span>
+              {% endif %}
+            {% else %}
+              Admin
             {% endif %}
           </a>
         {% else %}

@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'family',
     'compressor',
     'dashboard',
+    'audit',
 ]
 
 
@@ -55,6 +56,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'person.middleware.PersonAuthMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -147,3 +149,5 @@ AUTHENTICATION_BACKENDS = [
     'person.auth_backends.PersonAuthBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+LOGIN_URL = '/login/'

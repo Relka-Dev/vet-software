@@ -120,6 +120,23 @@ class Appointment(models.Model):
     class Meta:
         verbose_name = "Consultation"
         verbose_name_plural = "Consultations"
+    
+    def clean(self):
+        from django.core.exceptions import ValidationError
+
+        conflicting = Appointment.objects.filter(
+            employee=self.employee,
+            start_date__lt=self.end_date,
+            end_date__gt=self.start_date
+        )
+
+        if self.pk:
+            conflicting = conflicting.exclude(pk=self.pk)
+
+        if conflicting.exists():
+            raise ValidationError(
+                f"{self.employee.person.get_full_name()} a déjà un rendez-vous à cette période."
+            )
 
     def __str__(self):
         return f"Animal : {self.animal} - Salle : {self.room} - Employee : {self.employee} - Emergency Type : {self.emergency_type} - Start Date  : {self.start_date} - End Date : {self.end_date}"
