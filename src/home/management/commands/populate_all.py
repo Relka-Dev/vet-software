@@ -31,10 +31,26 @@ class Command(BaseCommand):
         )
 
         # Désactiver les signaux pendant la population
-        post_save.disconnect(audit_signals.log_animal_change, sender=Animal)
-        post_delete.disconnect(audit_signals.log_animal_delete, sender=Animal)
-        post_save.disconnect(audit_signals.log_soapnote_change, sender=SOAPNote)
-        post_delete.disconnect(audit_signals.log_soapnote_delete, sender=SOAPNote)
+        post_save.disconnect(
+            audit_signals.generic_log_change,
+            sender=Animal,
+            dispatch_uid='log_animal_change',
+        )
+        post_delete.disconnect(
+            audit_signals.generic_log_delete,
+            sender=Animal,
+            dispatch_uid='log_animal_delete',
+        )
+        post_save.disconnect(
+            audit_signals.generic_log_change,
+            sender=SOAPNote,
+            dispatch_uid='log_soapnote_change',
+        )
+        post_delete.disconnect(
+            audit_signals.generic_log_delete,
+            sender=SOAPNote,
+            dispatch_uid='log_soapnote_delete',
+        )
 
         try:
             self.stdout.write("\nClearing existing data...")
@@ -79,7 +95,23 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS("All data successfully populated!"))
         finally:
             # Réactiver les signaux
-            post_save.connect(audit_signals.log_animal_change, sender=Animal)
-            post_delete.connect(audit_signals.log_animal_delete, sender=Animal)
-            post_save.connect(audit_signals.log_soapnote_change, sender=SOAPNote)
-            post_delete.connect(audit_signals.log_soapnote_delete, sender=SOAPNote)
+            post_save.connect(
+                audit_signals.generic_log_change,
+                sender=Animal,
+                dispatch_uid='log_animal_change',
+            )
+            post_delete.connect(
+                audit_signals.generic_log_delete,
+                sender=Animal,
+                dispatch_uid='log_animal_delete',
+            )
+            post_save.connect(
+                audit_signals.generic_log_change,
+                sender=SOAPNote,
+                dispatch_uid='log_soapnote_change',
+            )
+            post_delete.connect(
+                audit_signals.generic_log_delete,
+                sender=SOAPNote,
+                dispatch_uid='log_soapnote_delete',
+            )
