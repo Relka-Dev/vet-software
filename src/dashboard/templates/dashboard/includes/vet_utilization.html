@@ -1,58 +1,60 @@
-<div class="max-w-sm w-full bg-white rounded-lg shadow-sm p-4 md:p-6">
-    <div class="flex justify-between items-start mb-4">
-        <div class="flex items-end space-x-2">
-            <span class="leading-none text-3xl font-bold text-gray-900">{{ global_vet_usage }}%</span>
-            <h5 class="text-base font-normal text-gray-500">Utilisation des vets en {{ current_year }}</h5>
+<div class="w-full bg-white rounded-lg shadow-sm p-4 md:p-6 h-full">
+    <div class="flex justify-between mb-3">
+        <div class="flex items-center">
+            <div class="flex justify-center items-center">
+                <h5 class="text-xl font-bold leading-none text-gray-900 pe-1">Utilisation des vétérinaires</h5>
+            </div>
         </div>
     </div>
-    <div id="vet-chart"></div>
+    <div class="py-6" id="vet-radial-chart"></div>
 </div>
 <script>
     const vetUsageData = {{ vet_usage_percentage|safe }};
-    let vetChart = null;
-    function initVetChart() {
-        const vetNames = Object.keys(vetUsageData);
-        const vetPercentages = Object.values(vetUsageData);
-        const options = {
-            series: [{
-                name: 'Utilisation (%)',
-                data: vetPercentages
-            }],
-            chart: {
-                type: 'bar',
-                height: 350,
-                sparkline: {
-                    enabled: false
-                }
-            },
-            plotOptions: {
-                bar: {
-                    horizontal: false,
-                    columnWidth: '55%',
-                    borderRadius: 4
-                }
-            },
-            fill: {
-                colors: ['#2563eb']
-            },
-            xaxis: {
-                categories: vetNames
-            },
-            yaxis: {
-                title: {
-                    text: '% utilisation'
-                },
-                min: 0,
-                max: Math.max(Math.max(...vetPercentages) * 1.1,10)
-            },
-            colors: ['#2563eb']
-        };
+    const vetNames = Object.keys(vetUsageData);
+    const vetPercentages = Object.values(vetUsageData);
 
-        if (vetChart) {
-            vetChart.destroy();
-        }
+    var options = {
+        series: vetPercentages,
+        chart: {
+            type: 'radialBar',
+            height: 350,
+            toolbar: {
+                show: true,
+                tools: {
+                    download: true,
+                    selection: false,
+                    zoom: false,
+                    zoomin: false,
+                    zoomout: false,
+                    pan: false,
+                    reset: false,
+                }
+            }
+        },
+        plotOptions: {
+            radialBar: {
+                dataLabels: {
+                    name: {
+                        fontSize: '16px'
+                    },
+                    value: {
+                        fontSize: '14px'
+                    },
+                    total: {
+                        show: true,
+                        label: 'Total',
+                        formatter: function () {
+                            return Math.round(
+                                vetPercentages.reduce((a, b) => a + b, 0) / vetPercentages.length
+                            ) + '%';
+                        }
+                    }
+                }
+            }
+        },
+        labels: vetNames
+    };
 
-        vetChart = new ApexCharts(document.querySelector("#vet-chart"), options);
-        vetChart.render();
-    }
+    var chart = new ApexCharts(document.querySelector("#vet-radial-chart"), options);
+    chart.render();
 </script>

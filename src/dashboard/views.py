@@ -156,7 +156,7 @@ def get_vet_utilization(year_start, year_end):
             vet_usage_percentage
         )
 
-    return json.dumps(vet_usage_percentage), round(global_vet_usage, 2)
+    return vet_usage_percentage, round(global_vet_usage, 2)
 
 
 @login_required
