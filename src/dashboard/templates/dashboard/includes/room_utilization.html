@@ -31,11 +31,21 @@
                 bar: {
                     horizontal: false,
                     columnWidth: '55%',
-                    borderRadius: 4
+                    borderRadius: 4,
+                    distributed: true
+                }
+            },
+            dataLabels: {
+                enabled: true,
+                formatter: function (val) {
+                    return val + ' %';
+                },
+                style: {
+                    fontWeight: 'bold'
                 }
             },
             fill: {
-                colors: ['#2563eb']
+                colors: ['#2563EB','#52BE78','#A8A2FB','#5B7A98','#7285B8','#48F1FE']
             },
             xaxis: {
                 categories: roomNames
@@ -47,7 +57,7 @@
                 },
                 max: Math.max(Math.max(...roomPercentages) * 1.1,10)
             },
-            colors: ['#2563eb']
+            colors: ['#2563EB','#52BE78','#A8A2FB','#5B7A98','#7285B8','#48F1FE']
         };
 
         if (roomChart) {
