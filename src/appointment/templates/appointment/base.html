@@ -9,26 +9,49 @@
                 <span class="mx-2">/</span>
                 <span class="text-gray-800 font-medium">Rendez-vous de {{ appointment.animal.name }} le {{ appointment.start_date|date:"d/m/Y H:i" }}</span>
             {% endif %}
+            {% if reminders %}
+                <span class="mx-2">/</span>
+                <span class="text-gray-800 font-medium">Rappels</span>
+            {% endif %}
         </nav>
         <div class="flex justify-between bg-white rounded-lg shadow-md p-6 text-3xl font-bold text-gray-800 mb-2">
             <h2>
                 {% if appointment %}
                     Rendez-vous du {{ appointment.start_date|date:"d/m/Y" }}
                     <span class="text-base font-normal text-gray-500 ml-2">pour {{ appointment.animal.name }}</span>
+                {% elif reminders %}
+                    Liste des rappels
                 {% else %}
                     Calendrier des rendez-vous
                 {% endif %}
             </h2>
-            {% if not appointment %}
-                <div class="text-sm font-normal text-gray-500 ml-2">
-                    <!-- Add Button -->
-                    <button onclick="toggleModal('new-appointment')"
-                            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                        </svg>
-                        Nouveau Rendez-vous
-                    </button>
+            {% if not appointment and not reminders %}
+                <div class="flex justify-between">
+                    <!-- Reminders -->
+                    <div class="text-sm font-normal text-gray-500 ml-2 flex items-center">
+                        <a href="{% url 'reminder_list' %}"
+                           class="relative px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
+                            </svg>
+                            Rappels
+                            {% if reminders_of_today|length > 0 %}
+                                <span class="absolute -top-2 -right-2 inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-600 border-2 border-white rounded-full">
+                                    {{ reminders_of_today|length }}
+                                </span>
+                            {% endif %}
+                        </a>
+                    </div>
+                    <!-- Add Appointment Button -->
+                    <div class="text-sm font-normal text-gray-500 ml-2">
+                        <button onclick="toggleModal('new-appointment')"
+                                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                            </svg>
+                            Nouveau Rendez-vous
+                        </button>
+                    </div>
                 </div>
             {% endif %}
         </div>

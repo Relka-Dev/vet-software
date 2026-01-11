@@ -18,6 +18,7 @@ from reportlab.lib.units import cm
 from reportlab.pdfgen import canvas
 from reportlab.lib import colors
 from reportlab.platypus import Table, TableStyle
+from .utils import get_reminders
 
 
 def calendar_view(request, year=None, month=None, day=None):
@@ -81,6 +82,10 @@ def calendar_view(request, year=None, month=None, day=None):
 
     emergency_types = EmergencyType.objects.all()
 
+    reminders_of_today = [
+        r for r in get_reminders() if r['reminder_date'] == timezone.now().date()
+    ]
+
     context = {
         'selected_date': selected_date,
         'prev_day': prev_day,
@@ -93,9 +98,30 @@ def calendar_view(request, year=None, month=None, day=None):
         'emergency_types': emergency_types,
         'is_reception': is_reception,
         'current_employee': current_employee,
+        'reminders_of_today': reminders_of_today,
     }
 
     return render(request, 'appointment/calendar.html', context)
+
+
+def reminder_list(request):
+    reminders = get_reminders()
+    reminders_today = []
+    reminders_rest = []
+
+    for r in reminders:
+        if r['reminder_date'] == timezone.now().date():
+            reminders_today.append(r)
+        else:
+            reminders_rest.append(r)
+
+    context = {
+        'reminders': reminders,
+        'reminders_today': reminders_today,
+        'reminders_rest': reminders_rest,
+    }
+
+    return render(request, 'appointment/reminder_list.html', context)
 
 
 def add_appointment(request):
@@ -170,8 +196,7 @@ def appointment_details(request, pk):
         procedure_form = ProcedureFormset(request.POST, instance=appointment)
         equipment_form = EquipmentFormset(request.POST, instance=appointment)
         if (
-            form.is_valid()
-            and item_form.is_valid()
+            item_form.is_valid()
             and procedure_form.is_valid()
             and equipment_form.is_valid()
         ):
