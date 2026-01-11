@@ -49,11 +49,17 @@ class Person(models.Model):
 @receiver(post_save, sender=Person)
 def create_user_for_person(sender, instance, created, **kwargs):
     if created and not instance.user:
-        user = User.objects.create(
-            username=instance.email,
-            email=instance.email,
-            first_name=instance.first_name,
-            last_name=instance.last_name,
-            password=instance.password_hash,
-        )
-        Person.objects.filter(pk=instance.pk).update(user=user)
+        from django.contrib.auth.models import User
+
+        if not User.objects.filter(username=instance.email).exists():
+            user = User.objects.create(
+                username=instance.email,
+                email=instance.email,
+                first_name=instance.first_name,
+                last_name=instance.last_name,
+                password=instance.password_hash,
+            )
+            Person.objects.filter(pk=instance.pk).update(user=user)
+        else:
+            user = User.objects.get(username=instance.email)
+            Person.objects.filter(pk=instance.pk).update(user=user)
