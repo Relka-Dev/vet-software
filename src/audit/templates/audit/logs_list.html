@@ -30,5 +30,48 @@
                 {% endfor %}
             </tbody>
         </table>
+        <nav class="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4"
+             aria-label="Table navigation">
+            <span class="text-sm font-normal text-gray-500 mb-4 md:mb-0 ml-4 block w-full md:inline md:w-auto">
+                <span class="font-semibold text-gray-900">{{ logs.start_index }}</span>
+                à <span class="font-semibold text-gray-900">{{ logs.end_index }}</span>
+                sur <span class="font-semibold text-gray-900">{{ logs.paginator.count }}</span>
+            </span>
+            <ul class="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
+                {% if logs.has_previous %}
+                    <li>
+                        <a href="?page=1"
+                           class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700">Début</a>
+                    </li>
+                    <li>
+                        <a href="?page={{ logs.previous_page_number }}"
+                           class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">Précédent</a>
+                    </li>
+                {% endif %}
+                {% for num in logs.paginator.page_range %}
+                    {% if logs.number == num %}
+                        <li>
+                            <span aria-current="page"
+                                  class="flex items-center justify-center px-3 h-8 text-blue-600 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700">{{ num }}</span>
+                        </li>
+                    {% elif num > logs.number|add:'-3' and num < logs.number|add:'3' %}
+                        <li>
+                            <a href="?page={{ num }}"
+                               class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                {% if logs.has_next %}
+                    <li>
+                        <a href="?page={{ logs.next_page_number }}"
+                           class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">Suivant</a>
+                    </li>
+                    <li>
+                        <a href="?page={{ logs.paginator.num_pages }}"
+                           class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700">Fin</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
     </div>
 {% endblock content %}
