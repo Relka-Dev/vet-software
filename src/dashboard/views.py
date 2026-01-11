@@ -8,7 +8,6 @@ import json
 from django.contrib.auth.decorators import login_required
 
 
-@login_required
 def get_appointments_data(year_start, year_end, months):
     appointments_year = (
         Appointment.objects.filter(
@@ -39,7 +38,6 @@ def get_appointments_data(year_start, year_end, months):
     )
 
 
-@login_required
 def get_room_usage(year_start, year_end):
     today = timezone.now().date()
 
@@ -103,7 +101,6 @@ def get_room_usage(year_start, year_end):
     return json.dumps(room_usage_percentage), round(global_room_usage, 2)
 
 
-@login_required
 def get_vet_utilization(year_start, year_end):
     today = timezone.now().date()
 
