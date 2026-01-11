@@ -6,6 +6,8 @@ from animal.models import Animal
 from employee.models import Employee
 from .forms import AppointmentForm, ItemFormset, ProcedureFormset, EquipmentFormset
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
+from django.contrib import messages
 
 
 @login_required
@@ -115,9 +117,16 @@ def add_appointment(request):
                 start_date=request.POST.get('start_date'),
                 end_date=request.POST.get('end_date'),
             )
-            appointment._current_user = request.person
+            appointment.full_clean()
             appointment.save()
+            messages.success(request, "Rendez-vous créé avec succès !")
 
+        except ValidationError as e:
+            if hasattr(e, 'messages'):
+                for msg in e.messages:
+                    messages.error(request, msg)
+            else:
+                messages.error(request, str(e))
         except Employee.DoesNotExist:
             pass
 
@@ -140,19 +149,27 @@ def update_appointment(request, pk):
         return redirect('calendar')
 
     if request.method == 'POST' and 'edit-button' in request.POST:
-        appointment.animal = Animal.objects.get(id=request.POST.get('animal'))
-        appointment.room = Room.objects.get(id=request.POST.get('room'))
+        try:
+            appointment.animal = Animal.objects.get(id=request.POST.get('animal'))
+            appointment.room = Room.objects.get(id=request.POST.get('room'))
 
-        if is_reception:
-            appointment.employee = Employee.objects.get(id=request.POST.get('employee'))
+            if is_reception:
+                appointment.employee = Employee.objects.get(id=request.POST.get('employee'))
 
-        appointment.emergency_type = EmergencyType.objects.get(
-            id=request.POST.get('emergency_type')
-        )
-        appointment.start_date = request.POST.get('start_date')
-        appointment.end_date = request.POST.get('end_date')
-        appointment._current_user = request.person
-        appointment.save()
+            appointment.emergency_type = EmergencyType.objects.get(
+                id=request.POST.get('emergency_type')
+            )
+            appointment.start_date = request.POST.get('start_date')
+            appointment.end_date = request.POST.get('end_date')
+            appointment._current_user = request.person
+            appointment.full_clean()
+            appointment.save()
+        except ValidationError as e:
+            if hasattr(e, 'messages'):
+                for msg in e.messages:
+                    messages.error(request, msg)
+            else:
+                messages.error(request, str(e))
 
     if request.method == 'POST' and 'delete-button' in request.POST:
         appointment._current_user = request.person
