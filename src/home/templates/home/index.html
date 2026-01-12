@@ -1,9 +1,47 @@
-<!-- templates/home/index.html -->
-
-{% extends "home/base.html" %} {% block title %}Vet Software - Accueil
-{%endblock %} {% block content %}
-<div class="text-3xl text-green-800">
-  <h1>Bienvenue sur Vet Software</h1>
-  <p>Système de gestion vétérinaire</p>
-</div>
+{% extends "home/base.html" %}
+{% block title %}
+  Vet Software - Accueil
+{% endblock title %}
+{% block content %}
+  <div class="text-3xl font-bold mt-8 mb-4">
+    <h1>Bienvenue sur la plateforme Vet</h1>
+    <div class="mt-10 grid gap-4 grid-cols-1 md:grid-cols-4 lg:grid-cols-4">
+      <a href="{% url 'calendar' %}"
+         class="block max-w-sm p-6 bg-white border border-2 border-gray-200 rounded-lg shadow-sm hover:bg-gray-100">
+        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 flex items-center gap-2">
+          Calendrier
+          <span class="flex items-center">
+            <svg class="w-6 h-6 text-gray-800"
+                 aria-hidden="true"
+                 xmlns="http://www.w3.org/2000/svg"
+                 width="24"
+                 height="24"
+                 fill="currentColor"
+                 viewBox="0 0 24 24">
+              <path fill-rule="evenodd" d="M5 5a1 1 0 0 0 1-1 1 1 0 1 1 2 0 1 1 0 0 0 1 1h1a1 1 0 0 0 1-1 1 1 0 1 1 2 0 1 1 0 0 0 1 1h1a1 1 0 0 0 1-1 1 1 0 1 1 2 0 1 1 0 0 0 1 1 2 2 0 0 1 2 2v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a2 2 0 0 1 2-2ZM3 19v-7a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Zm6.01-6a1 1 0 1 0-2 0 1 1 0 0 0 2 0Zm2 0a1 1 0 1 1 2 0 1 1 0 0 1-2 0Zm6 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0Zm-10 4a1 1 0 1 1 2 0 1 1 0 0 1-2 0Zm6 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0Zm2 0a1 1 0 1 1 2 0 1 1 0 0 1-2 0Z" clip-rule="evenodd" />
+            </svg>
+          </span>
+        </h5>
+        <p class="text-xl font-normal text-gray-700">Gérez vos rendez-vous et disponibilités facilement.</p>
+      </a>
+      <a href="{% url 'dashboard' %}"
+         class="block max-w-sm p-6 bg-white border border-2 border-gray-200 rounded-lg shadow-sm hover:bg-gray-100">
+        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 flex items-center gap-2">
+          Dashboard
+          <span class="flex items-center">
+            <svg class="w-6 h-6 text-gray-800 "
+                 aria-hidden="true"
+                 xmlns="http://www.w3.org/2000/svg"
+                 width="24"
+                 height="24"
+                 fill="currentColor"
+                 viewBox="0 0 24 24">
+              <path fill-rule="evenodd" d="M2 6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6Zm2 8v-2h7v2H4Zm0 2v2h7v-2H4Zm9 2h7v-2h-7v2Zm7-4v-2h-7v2h7Z" clip-rule="evenodd" />
+            </svg>
+          </span>
+        </h5>
+        <p class="text-xl font-normal text-gray-700">Visualisez les statistiques clés de la clinique.</p>
+      </a>
+    </div>
+  </div>
 {% endblock content %}
