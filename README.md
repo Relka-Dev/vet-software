@@ -25,6 +25,31 @@ For detailed installation and setup instructions, please see [CONTRIBUTING.md](C
 - Main site: http://127.0.0.1:8000/
 - Admin panel: http://127.0.0.1:8000/admin/
 
+## Sending Reminder Emails
+
+The system can automatically send reminder emails to staff for items that need follow-ups (e.g., 30 days after an appointment).
+
+### Prerequisites
+
+Configure your email settings in `.env` file:
+
+```env
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+EMAIL_HOST_USER=your-email@gmail.com
+EMAIL_HOST_PASSWORD=your-app-password
+DEFAULT_FROM_EMAIL=your-email@gmail.com
+```
+
+### Sending Reminders
+
+Run the command to send reminder emails for today's reminders:
+
+```bash
+python manage.py send_reminder_emails
+```
+
 ## Project Structure
 
 ```
@@ -53,7 +78,6 @@ vet-software/
 [DB Schema Link](https://dbdiagram.io/d/Copy-of-genie-logiciel-6964d8c5d6e030a024c4eeb1)
 
 <img width="2240" height="1288" alt="ERD_SCHEMA_2026_01_12" src="https://github.com/user-attachments/assets/89a977b2-0dec-452d-80f5-34ac1d7d7553" />
-
 
 **SQL dumps :** can be found [here](./db).
 

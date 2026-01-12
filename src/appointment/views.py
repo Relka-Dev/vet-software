@@ -116,11 +116,12 @@ def reminder_list(request):
     reminders = get_reminders()
     reminders_today = []
     reminders_rest = []
+    today = timezone.now().date()
 
     for r in reminders:
-        if r['reminder_date'] == timezone.now().date():
+        if r['reminder_date'] == today:
             reminders_today.append(r)
-        else:
+        elif r['reminder_date'] > today:
             reminders_rest.append(r)
 
     context = {
