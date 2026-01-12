@@ -54,11 +54,13 @@ python manage.py send_reminder_emails
 
 ```
 vet-software/
-├── src/                    # Django project source
-│   ├── home/              # Main application
+├── src/                   # Django project source
+│   ├── app_name/          # Main application (for each modules)
 │   │   ├── templates/     # HTML templates
 │   │   ├── views.py       # View functions
 │   │   └── urls.py        # URL routing
+│   │   └── models.py      # DataBase Tables
+│   │   └── forms.py       # User inputs
 │   ├── vet_software/      # Project settings
 │   │   └── settings.py    # Django configuration
 │   └── manage.py          # Django management script
@@ -80,6 +82,32 @@ vet-software/
 <img width="2240" height="1288" alt="ERD_SCHEMA_2026_01_12" src="https://github.com/user-attachments/assets/89a977b2-0dec-452d-80f5-34ac1d7d7553" />
 
 **SQL dumps :** can be found [here](./db).
+
+## SCREENSHOTS
+
+**Home Page**
+<img width="1918" height="877" alt="acceuil" src="https://github.com/user-attachments/assets/b944110c-a378-470a-926a-a18f0591dae8" />
+
+**Login Page**
+<img width="1918" height="878" alt="login" src="https://github.com/user-attachments/assets/dbb596c8-2a17-4e48-9107-63d116dd8194" />
+
+**Calandar and add an appointment**
+<img width="1917" height="880" alt="add_appointment_calandar" src="https://github.com/user-attachments/assets/918649af-525f-42ec-9bc5-2209b3f218d9" />
+
+**Reminder Page**
+<img width="1919" height="879" alt="reminders" src="https://github.com/user-attachments/assets/bbb4a85c-01de-411f-adf8-4d8bbfa9516a" />
+
+**SOAP Note Page**
+<img width="1918" height="881" alt="SOAPNote" src="https://github.com/user-attachments/assets/6980172c-8972-4a83-8b6e-57ecf81eb929" />
+
+**Family Page**
+<img width="1918" height="878" alt="family" src="https://github.com/user-attachments/assets/32a0d2cd-d92c-4b98-a913-56bd552cbfc6" />
+
+**DashBoard View**
+<img width="1919" height="877" alt="dashboard" src="https://github.com/user-attachments/assets/df30963a-f408-471f-8f28-2db373086a2e" />
+
+**Logs View**
+<img width="1918" height="875" alt="logs" src="https://github.com/user-attachments/assets/1bceb7a6-b49b-4568-b470-53a0b92d3dc8" />
 
 ## Authors
 
