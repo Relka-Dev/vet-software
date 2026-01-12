@@ -1,10 +1,24 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from datetime import datetime, timedelta
-from appointment.models import Appointment, Room, EmergencyType
+from appointment.models import (
+    Appointment,
+    Room,
+    EmergencyType,
+    AppointmentItem,
+    AppointmentProcedure,
+)
 from animal.models import Animal
 from employee.models import Employee
 from .forms import AppointmentForm, ItemFormset, ProcedureFormset, EquipmentFormset
+import io
+from django.http import FileResponse
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.units import cm
+from reportlab.pdfgen import canvas
+from reportlab.lib import colors
+from reportlab.platypus import Table, TableStyle
+from .utils import get_reminders
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.contrib import messages
@@ -76,6 +90,10 @@ def calendar_view(request, year=None, month=None, day=None):
 
     emergency_types = EmergencyType.objects.all()
 
+    reminders_of_today = [
+        r for r in get_reminders() if r['reminder_date'] == timezone.now().date()
+    ]
+
     context = {
         'selected_date': selected_date,
         'prev_day': prev_day,
@@ -88,9 +106,30 @@ def calendar_view(request, year=None, month=None, day=None):
         'emergency_types': emergency_types,
         'is_reception': is_reception,
         'current_employee': current_employee,
+        'reminders_of_today': reminders_of_today,
     }
 
     return render(request, 'appointment/calendar.html', context)
+
+
+def reminder_list(request):
+    reminders = get_reminders()
+    reminders_today = []
+    reminders_rest = []
+
+    for r in reminders:
+        if r['reminder_date'] == timezone.now().date():
+            reminders_today.append(r)
+        else:
+            reminders_rest.append(r)
+
+    context = {
+        'reminders': reminders,
+        'reminders_today': reminders_today,
+        'reminders_rest': reminders_rest,
+    }
+
+    return render(request, 'appointment/reminder_list.html', context)
 
 
 @login_required
@@ -189,8 +228,7 @@ def appointment_details(request, pk):
         procedure_form = ProcedureFormset(request.POST, instance=appointment)
         equipment_form = EquipmentFormset(request.POST, instance=appointment)
         if (
-            form.is_valid()
-            and item_form.is_valid()
+            item_form.is_valid()
             and procedure_form.is_valid()
             and equipment_form.is_valid()
         ):
@@ -218,3 +256,151 @@ def appointment_details(request, pk):
             'equipment_formset': equipment_form,
         },
     )
+
+
+# Generate a invoice with total items and procedures used
+def generate_invoice_pdf(request, pk):
+    appointment = get_object_or_404(
+        Appointment.objects.select_related(
+            'animal', 'employee', 'room', 'emergency_type'
+        ),
+        id=pk,
+    )
+
+    # Baseline
+    buffer = io.BytesIO()
+    p = canvas.Canvas(buffer, pagesize=A4)
+    width, height = A4
+    y = height - 2 * cm
+
+    # Header
+    p.setFont("Helvetica-Bold", 20)
+    p.drawString(2 * cm, y, "FACTURE")
+    p.setFont("Helvetica", 10)
+    y -= 0.5 * cm
+    p.drawString(2 * cm, y, f"Date: {datetime.now().strftime('%d/%m/%Y')}")
+    y -= 0.4 * cm
+    p.drawString(2 * cm, y, f"N° Facture: INV-{appointment.id:05d}")
+
+    # Separation line
+    y -= 1 * cm
+    p.line(2 * cm, y, width - 2 * cm, y)
+
+    # General informations
+    y -= 1 * cm
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(2 * cm, y, "Détails du rendez-vous")
+
+    y -= 0.7 * cm
+    p.setFont("Helvetica", 10)
+    p.drawString(2 * cm, y, f"Animal: {appointment.animal.name}")
+    y -= 0.5 * cm
+    p.drawString(
+        2 * cm,
+        y,
+        f"Date et heure: {appointment.start_date.strftime('%d/%m/%Y %H:%M')} - {appointment.end_date.strftime('%H:%M')}",
+    )
+    y -= 0.5 * cm
+    p.drawString(2 * cm, y, f"Vétérinaire: {appointment.employee}")
+    y -= 0.5 * cm
+    p.drawString(2 * cm, y, f"Salle: {appointment.room}")
+    y -= 0.5 * cm
+    p.drawString(2 * cm, y, f"Type de rendez-vous: {appointment.emergency_type}")
+
+    # Separation line
+    y -= 0.8 * cm
+    p.line(2 * cm, y, width - 2 * cm, y)
+
+    # Table for item/procedure
+    y -= 1 * cm
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(2 * cm, y, "Détails de la facturation")
+
+    # Table data
+    data = [['Description', 'Quantité', 'Prix unitaire', 'Total']]
+    total_general = 0
+
+    # Fetch all items and calculate total with price + quantity
+    items = AppointmentItem.objects.filter(appointment=appointment).select_related(
+        'item'
+    )
+    for item in items:
+        prix_unitaire = item.item.price
+        total_ligne = prix_unitaire * item.quantity
+        total_general += total_ligne
+        data.append(
+            [
+                str(item.item),
+                str(item.quantity),
+                f"{prix_unitaire:.2f} CHF",
+                f"{total_ligne:.2f} CHF",
+            ]
+        )
+
+    # Fetch all procedures and calculate total with price + quantity
+    procedures = AppointmentProcedure.objects.filter(
+        appointment=appointment
+    ).select_related('procedure')
+    for proc in procedures:
+        prix_unitaire = proc.procedure.price
+        total_ligne = prix_unitaire * proc.quantity
+        total_general += total_ligne
+        data.append(
+            [
+                str(proc.procedure.name),
+                str(proc.quantity),
+                f"{prix_unitaire:.2f} CHF",
+                f"{total_ligne:.2f} CHF",
+            ]
+        )
+
+    # If no item/procedure
+    if len(data) == 1:
+        data.append(['Aucun article ou procédure', '-', '-', '-'])
+
+    # Create table
+    y -= 0.5 * cm
+    table = Table(data, colWidths=[8 * cm, 2 * cm, 3 * cm, 3 * cm])
+    table.setStyle(
+        TableStyle(
+            [
+                ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, 0), 10),
+                ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+                ('GRID', (0, 0), (-1, -1), 1, colors.black),
+                ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+                ('FONTSIZE', (0, 1), (-1, -1), 9),
+                ('ALIGN', (1, 1), (-1, -1), 'CENTER'),
+                ('ALIGN', (0, 1), (0, -1), 'LEFT'),
+            ]
+        )
+    )
+
+    # Draw table
+    table.wrapOn(p, width, height)
+    table_height = table._height
+    table.drawOn(p, 2 * cm, y - table_height)
+
+    # Total
+    y = y - table_height - 1 * cm
+    p.line(width - 8 * cm, y, width - 2 * cm, y)
+    y -= 0.5 * cm
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(width - 8 * cm, y, "TOTAL:")
+    p.drawRightString(width - 2 * cm, y, f"{total_general:.2f} CHF")
+
+    # Footer
+    p.setFont("Helvetica", 8)
+    p.drawCentredString(width / 2, 1.5 * cm, "Merci de votre confiance")
+    p.drawCentredString(width / 2, 1 * cm, "Clinique Vétérinaire - Votre adresse ici")
+
+    # Finalize file
+    p.showPage()
+    p.save()
+    buffer.seek(0)
+    filename = f"facture_{appointment.id}_{appointment.animal.name}_{datetime.now().strftime('%Y%m%d')}.pdf"
+    return FileResponse(buffer, as_attachment=True, filename=filename)
