@@ -50,9 +50,10 @@ vet-software/
 
 ## SQL SCHEMA
 
-[DB Diagram link](https://dbdiagram.io/d/692583c97d9416ddff01868e)
+[DB Schema Link](https://dbdiagram.io/d/Copy-of-genie-logiciel-6964d8c5d6e030a024c4eeb1)
 
-![screenshot db schema](./docs/img/genie-logiciel_SQL_2025-12-11.png)
+<img width="2240" height="1288" alt="ERD_SCHEMA_2026_01_12" src="https://github.com/user-attachments/assets/89a977b2-0dec-452d-80f5-34ac1d7d7553" />
+
 
 **SQL dumps :** can be found [here](./db).
 
