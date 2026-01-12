@@ -1,0 +1,59 @@
+{% extends "appointment/base.html" %}
+{% block title %}
+    Reminders
+{% endblock title %}
+{% block calendar_content %}
+    <div>
+        <h2 class="text-2xl font-bold mb-4 flex items-center">
+            <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
+            </svg>
+            Rappels d'aujourd'hui ({{ reminders_today|length }})
+        </h2>
+        {% if reminders_today %}
+            <ul class="space-y-2">
+                {% for reminder in reminders_today %}
+                    <li class="border rounded-lg p-6 bg-white shadow flex flex-col">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h2 class="text-xl font-semibold mb-4 text-gray-800">{{ reminder.animal.name }}</h2>
+                                <p class="text-sm text-gray-600">Rappel pour un vaccin (ex)</p>
+                                <p class="text-xs text-gray-500 mt-1">
+                                    Article: {{ reminder.item.name }} |
+                                    Dernière visite: {{ reminder.original_date|date:"d/m/Y" }}
+                                </p>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% if reminders_rest %}
+            <br>
+            <div class="border rounded-lg p-6 bg-blue-50 shadow flex flex-col">
+                <h3 class="text-lg font-semibold text-blue-800 mb-2">Prochains rappels ({{ reminders_rest|length }})</h3>
+                <div class="space-y-1">
+                    {% for reminder in reminders_rest %}
+                        <div class="text-sm text-gray-700 flex justify-between items-center">
+                            <div>
+                                <span class="font-medium">{{ reminder.reminder_date|date:"d/m" }}</span> -
+                                {{ reminder.animal.name }} - {{ reminder.item.name }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+        {% if not reminders_today and not reminders_rest %}
+            <div class="p-8 rounded-lg text-center">
+                <svg class="w-16 h-16 mx-auto text-gray-400 mb-4"
+                     fill="none"
+                     stroke="currentColor"
+                     viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p class="text-gray-600 text-lg font-semibold mb-2">Aucun rappel en attente</p>
+            </div>
+        {% endif %}
+    </div>
+{% endblock calendar_content %}

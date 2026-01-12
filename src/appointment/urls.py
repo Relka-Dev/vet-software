@@ -17,4 +17,10 @@ urlpatterns = [
         views.appointment_details,
         name='appointment_details',
     ),
+    path(
+        'calendar/details/<int:pk>/invoice',
+        views.generate_invoice_pdf,
+        name="generate_invoice",
+    ),
+    path('calendar/reminders', views.reminder_list, name='reminder_list'),
 ]

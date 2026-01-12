@@ -21,7 +21,7 @@ def inventory_list(request):
 def add_item(request):
     if request.method == 'POST':
         name = request.POST.get('name')
-        reminder = request.POST.get('reminder')
+        reminder = bool(request.POST.get('reminder'))
         price = request.POST.get('price')
         treatment_type_id = request.POST.get('treatment_type')
         treatment_type = TreatmentType.objects.get(id=treatment_type_id)
@@ -49,7 +49,7 @@ def update_item(request, pk):
     # save the new informations with the edit button
     if request.method == 'POST' and 'edit-button' in request.POST:
         item.name = request.POST.get('name')
-        item.reminder = request.POST.get('reminder')
+        item.reminder = bool(request.POST.get('reminder'))
         item.price = request.POST.get('price')
         treatment_type_id = request.POST.get('treatment_type')
         item.treatment_type = TreatmentType.objects.get(id=treatment_type_id)
