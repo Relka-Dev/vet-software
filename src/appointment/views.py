@@ -194,7 +194,9 @@ def update_appointment(request, pk):
             appointment.room = Room.objects.get(id=request.POST.get('room'))
 
             if is_reception:
-                appointment.employee = Employee.objects.get(id=request.POST.get('employee'))
+                appointment.employee = Employee.objects.get(
+                    id=request.POST.get('employee')
+                )
 
             appointment.emergency_type = EmergencyType.objects.get(
                 id=request.POST.get('emergency_type')
@@ -232,9 +234,17 @@ def appointment_details(request, pk):
             and procedure_form.is_valid()
             and equipment_form.is_valid()
         ):
-            item_form.instance._current_user = request.person
-            procedure_form.instance._current_user = request.person
-            equipment_form.instance._current_user = request.person
+
+            for form in item_form:
+                if form.cleaned_data:
+                    form.instance._current_user = request.person
+            for form in procedure_form:
+                if form.cleaned_data:
+                    form.instance._current_user = request.person
+            for form in equipment_form:
+                if form.cleaned_data:
+                    form.instance._current_user = request.person
+
             item_form.save()
             procedure_form.save()
             equipment_form.save()
