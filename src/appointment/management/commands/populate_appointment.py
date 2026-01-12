@@ -117,6 +117,47 @@ class Command(BaseCommand):
                     item=items[0],
                     quantity=1,
                 )
+        appt1 = Appointment.objects.create(
+            animal=animals[0],
+            room=rooms[0],
+            employee=employees[0],
+            emergency_type=emergency_types[0],
+            start_date=now.replace(day=15, hour=11, minute=0),
+            end_date=now.replace(day=15, hour=12, minute=0),
+        )
+        AppointmentItem.objects.create(
+            appointment=appt1,
+            item=items[0],
+            quantity=1,
+        )
+
+        appt2 = Appointment.objects.create(
+            animal=animals[1],
+            room=rooms[1],
+            employee=employees[1],
+            emergency_type=emergency_types[1],
+            start_date=now.replace(day=15, hour=12, minute=0),
+            end_date=now.replace(day=15, hour=13, minute=0),
+        )
+        AppointmentItem.objects.create(
+            appointment=appt2,
+            item=items[0],
+            quantity=1,
+        )
+
+        appt3 = Appointment.objects.create(
+            animal=animals[2],
+            room=rooms[2],
+            employee=employees[2],
+            emergency_type=emergency_types[2],
+            start_date=now.replace(day=15, hour=13, minute=0),
+            end_date=now.replace(day=15, hour=14, minute=0),
+        )
+        AppointmentItem.objects.create(
+            appointment=appt3,
+            item=items[0],
+            quantity=1,
+        )
 
         self.stdout.write(
             self.style.SUCCESS(

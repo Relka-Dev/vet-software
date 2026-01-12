@@ -44,6 +44,7 @@ def add_item(request):
 def update_item(request, pk):
     # make sure it's the right item
     item = Item.objects.get(id=pk)
+    inventory = Inventory.objects.get(item=item)
 
     # save the new informations with the edit button
     if request.method == 'POST' and 'edit-button' in request.POST:
@@ -55,6 +56,11 @@ def update_item(request, pk):
         item._current_user = request.person
         item.save()
 
+        inventory.quantity = request.POST.get('quantity')
+        inventory.expiration_date = request.POST.get('expiration_date')
+        inventory._current_user = request.person
+        inventory.save()
+
         return redirect('inventory_list')
 
     # otherwise delete the item with the delete button
@@ -63,4 +69,4 @@ def update_item(request, pk):
         item.delete()
         return redirect('inventory_list')
 
-    return render(request, 'inventory/update_item.html', {'item': item})
+    return redirect('inventory_list')

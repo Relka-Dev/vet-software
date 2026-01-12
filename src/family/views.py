@@ -2,8 +2,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Family, Extra_family_member
 from .forms import PersonForm
 from person.models import Person
+from django.contrib.auth.decorators import login_required
 
 
+@login_required
 def family_list(request):
     families = Family.objects.all()
     form = PersonForm()
